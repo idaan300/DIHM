@@ -13,6 +13,7 @@ class Block:
     def calc_hash(self):
         sha = hashlib.sha256()
         data = str(self.transactions) + str(self.timestamp) + str(self.prev_hash) + str(self.nonce)
+        print(data)
         sha.update(data.encode('utf-8'))
         return sha.hexdigest()
     
