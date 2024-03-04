@@ -1,6 +1,12 @@
 #!/bin/python3
+import json
+from Blockchain import Blockchain
+from Block import Block
+from flask import Flask, request
 
-from flask import Flask
+blockchain = Blockchain()
+#peers list
+peers = []
 
 app = Flask(__name__)
 
