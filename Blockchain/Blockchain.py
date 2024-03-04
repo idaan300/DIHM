@@ -12,7 +12,7 @@ class Blockchain:
         self.chain.append(genesis)
 
     def create_genesis(self):
-        return Block("Genesis Block",self.getDateTime(), "0")
+        return Block("[]",self.getDateTime(), "0")
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
