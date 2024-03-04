@@ -12,17 +12,18 @@ class Blockchain:
         self.chain.append(genesis)
 
     def create_genesis(self):
-        dt = datetime.datetime.now()
-        dt_str = dt.isoformat()
-        return Block("Genesis Block",dt_str, "0")
+        return Block("Genesis Block",self.getDateTime(), "0")
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
-        new_block = Block(data,datetime.datetime.now(), prev_block)
+        new_block = Block(data,self.getDateTime(), prev_block)
         new_block.hash = new_block.calc_hash()
         self.chain.append(new_block)
     
-
+    def getDateTime(self):
+        dt = datetime.datetime.now()
+        dt_str = dt.isoformat()
+        return dt_str
 
 blockchain = Blockchain()
 blockchain.add_block("23123131")
