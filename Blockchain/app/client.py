@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from app import app
 from timeit import default_timer as timer
 
-ADDR = "http://127.0.0.1:8000"
+ADDR = "http://127.0.0.1:80"
 
 # Stores all the post transaction in the node
 request_tx = []
@@ -47,7 +47,7 @@ def submit():
         "file_data" : str(up_file.stream.read()), #file data
         "file_size" : file_states   #file size
     }
-   
+    print(post_object)
     # Submit a new transaction
     address = "{0}/new_transaction".format(ADDR)
     requests.post(address, json=post_object)
