@@ -16,7 +16,7 @@ class Blockchain:
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
-        new_block = Block(data,self.getDateTime(), prev_block)
+        new_block = Block(data,self.getDateTime(), prev_block.hash)
         new_block.hash = new_block.calc_hash()
         self.chain.append(new_block)
     
