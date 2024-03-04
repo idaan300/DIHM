@@ -10,6 +10,15 @@ class Block:
         self.prev_hash = prev_hash
         self.nonce = 0
 
+    def to_dict(self):
+        return {
+            'transactions': self.transactions,  # Assuming transactions are already JSON serializable
+            'timestamp': self.timestamp,
+            'prev_hash': self.prev_hash,
+            'nonce': self.nonce,
+            'hash': self.hash if self.hash else None
+        }
+
     def calc_hash(self):
         sha = hashlib.sha256()
         data = str(self.transactions) + str(self.timestamp) + str(self.prev_hash) + str(self.nonce)
