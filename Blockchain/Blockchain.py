@@ -57,7 +57,13 @@ class Blockchain:
     def load_blockchain(self):
         try:
             with open('blockchain.txt', 'r') as file:
-                return json.load(file)
+                chain = []
+                dict = json.load(file)
+                print(dict)
+                for block in dict:
+                    Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
+                    chain.append(Block)
+                return chain
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing blockchain found or error in parsing. Starting a new blockchain.")
             return "null"  # or return a new blockchain with just the genesis block
