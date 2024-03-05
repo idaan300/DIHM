@@ -16,7 +16,7 @@ class Blockchain:
             self.save_blockchain(self.chain)
         else:
             self.chain = start
-        print(self.chain)
+        print(self.chain[0].hash)
 
     def create_genesis(self): 
         block = Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
@@ -32,6 +32,7 @@ class Blockchain:
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
+        print("previous block = ", prev_block)
         new_block = Block(data,self.getDateTime(), prev_block.hash)
         new_block.hash = new_block.calc_hash()
         self.chain.append(new_block)
@@ -59,15 +60,16 @@ class Blockchain:
             with open('blockchain.txt', 'r') as file:
                 chain = []
                 dict = json.load(file)
-                print(dict)
+                print("dict: ",dict)
                 for block in dict:
-                    Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
-                    chain.append(Block)
+                    b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
+                    chain.append(b)
                 return chain
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing blockchain found or error in parsing. Starting a new blockchain.")
             return "null"  # or return a new blockchain with just the genesis block
 
 blockchain = Blockchain()
+blockchain.add_block({'user': 'Joris', 'v_file': 'Update', 'file_data': "0", 'file_size': 0})
 
     #print("cur hash: ", block.hash)
