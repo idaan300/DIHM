@@ -29,8 +29,9 @@ def get_tx_req(): #get blockchain
     if resp.status_code == 200:
         content = []
         chain = json.loads(resp.content.decode())
+        print("ChAIN=", chain)
         for block in chain["chain"]:
-            print(block["transactions"][1])
+            print("BLOCK=", block["transactions"])
             block["user"] = block["transactions"][0]
             block["v_file"] = block["transactions"][1]
             block["file_data"] = block["transactions"][2]
