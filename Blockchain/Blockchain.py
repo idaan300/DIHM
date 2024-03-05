@@ -8,7 +8,7 @@ class Blockchain:
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
         start = self.load_blockchain()
-        if(start == 0):
+        if(start == "null"):
             self.chain = [] # blockchain
             genesis = self.create_genesis()
             genesis.hash = genesis.calc_hash()
@@ -19,6 +19,15 @@ class Blockchain:
         print(self.chain)
 
     def create_genesis(self): 
+        block = Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
+        print("bLOCK CREATED")
+        try:
+            #print("TESTSSSSS ",json.dumps((block.transactions,block.timestamp, block.prev_hash)))
+            bl = block.to_dict()
+            print("TEST ",json.dumps((bl)))
+        except TypeError as e:
+            print("Serialization error:", e)
+
         return Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
@@ -32,24 +41,27 @@ class Blockchain:
         dt_str = dt.isoformat()
         return dt_str
     
-    def save_blockchain(blockchain):
-        with open('blockchain.txt', 'w') as file:
-            json.dump(blockchain, file, indent=4)
+    def serializeBlockchain(self,blockchain): #for JSON Dumps
+        chain = []
+        for Block in blockchain:
+            b = Block.to_dict()
+            chain.append(b)
+        return chain
 
-    def load_blockchain():
+    
+    def save_blockchain(self, blockchain):
+        with open('blockchain.txt', 'w') as file:
+            chain = self.serializeBlockchain(blockchain)
+            json.dump(chain, file, indent=4)
+
+    def load_blockchain(self):
         try:
             with open('blockchain.txt', 'r') as file:
                 return json.load(file)
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing blockchain found or error in parsing. Starting a new blockchain.")
-            return 0  # or return a new blockchain with just the genesis block
+            return "null"  # or return a new blockchain with just the genesis block
 
 blockchain = Blockchain()
-blockchain.add_block("23123131")
 
-print("Blockchain:")
-for block in blockchain.chain:
-    print("data: ", block.transactions)
-    print("time: ", block.timestamp)
-    print("prev hash: ", block.prev_hash)
     #print("cur hash: ", block.hash)
