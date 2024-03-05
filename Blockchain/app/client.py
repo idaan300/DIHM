@@ -31,7 +31,7 @@ def get_tx_req(): #get blockchain
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
             for trans in block["transactions"]:
-                trans["index"] = block["index"]
+                trans["timestamp"] = block["timestamp"]
                 trans["hash"] = block["prev_hash"]
                 content.append(trans)
         request_tx = sorted(content,key=lambda k: k["hash"],reverse=True)
@@ -39,7 +39,7 @@ def get_tx_req(): #get blockchain
 
 @app.route("/")
 def index():
-    #get_tx_req()
+    get_tx_req()
     return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
 @app.route("/submit", methods=["POST"])
