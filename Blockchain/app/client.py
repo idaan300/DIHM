@@ -29,12 +29,13 @@ def get_tx_req(): #get blockchain
     if resp.status_code == 200:
         content = []
         chain = json.loads(resp.content.decode())
-        for block in chain["chain"]:
-            for trans in block["transactions"]:
-                trans["timestamp"] = block["timestamp"]
-                trans["hash"] = block["prev_hash"]
-                content.append(trans)
-        request_tx = sorted(content,key=lambda k: k["hash"],reverse=True)
+        print(chain)
+        # for block in chain["chain"]:
+        #     for trans in block["transactions"]:
+        #         trans["timestamp"] = block["timestamp"]
+        #         trans["hash"] = block["prev_hash"]
+        #         content.append(trans)
+        request_tx = sorted(chain,key=lambda k: k["hash"],reverse=True)
 
 
 @app.route("/")
