@@ -36,6 +36,7 @@ class Blockchain:
         new_block = Block(data,self.getDateTime(), prev_block.hash)
         new_block.hash = new_block.calc_hash()
         self.chain.append(new_block)
+        self.save_blockchain(self.chain)
     
     def getDateTime(self):
         dt = datetime.datetime.now()
