@@ -32,13 +32,16 @@ def get_tx_req(): #get blockchain
         for block in chain["chain"]:
             print(block["transactions"][1])
             block["user"] = block["transactions"][0]
-            print(block["user"])
+            block["v_file"] = block["transactions"][1]
+            block["file_data"] = block["transactions"][2]
+            block["file_size"] = block["transactions"][3]
             # for trans in block["transactions"]:
             #     print(trans)
             #     trans["timestamp"] = block["timestamp"]
             #     trans["hash"] = block["prev_hash"]
             #     content.append(trans)
             content.append(block)
+            print(content)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 
 
