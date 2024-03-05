@@ -30,6 +30,9 @@ def get_tx_req(): #get blockchain
         content = []
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
+            print(block["transactions"][1])
+            block["user"] = block["transactions"][0]
+            print(block["user"])
             # for trans in block["transactions"]:
             #     print(trans)
             #     trans["timestamp"] = block["timestamp"]
