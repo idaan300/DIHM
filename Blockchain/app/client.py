@@ -78,4 +78,9 @@ def submit():
     print(end - start)
     return redirect("/")
 
+@app.route("/submit/<string:variable>",methods = ["GET"])
+def download_file(variable):
+    p = files[variable]
+    return send_file(p,as_attachment=True)
+
 app.run(host="0.0.0.0", port=8000)
