@@ -30,13 +30,13 @@ def get_tx_req(): #get blockchain
         content = []
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
-            for trans in block["transactions"]:
-                print(trans)
-                print("blc timestamp ", block["timestamp"])
-                trans["timestamp"] = block["timestamp"]
-                trans["hash"] = block["prev_hash"]
-                content.append(trans)
-        request_tx = sorted(content,key=lambda k: k["hash"],reverse=True)
+            # for trans in block["transactions"]:
+            #     print(trans)
+            #     trans["timestamp"] = block["timestamp"]
+            #     trans["hash"] = block["prev_hash"]
+            #     content.append(trans)
+            content.append(block)
+        request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 
 
 @app.route("/")
