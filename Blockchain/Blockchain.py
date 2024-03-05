@@ -1,15 +1,22 @@
 import datetime
 from Block import Block
+import json
 
 class Blockchain:
 
 
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
-        self.chain = [] # blockchain
-        genesis = self.create_genesis()
-        genesis.hash = genesis.calc_hash()
-        self.chain.append(genesis)
+        start = self.load_blockchain()
+        if(start == 0):
+            self.chain = [] # blockchain
+            genesis = self.create_genesis()
+            genesis.hash = genesis.calc_hash()
+            self.chain.append(genesis)
+            self.save_blockchain(self.chain)
+        else:
+            self.chain = start
+        print(self.chain)
 
     def create_genesis(self): 
         return Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
@@ -24,6 +31,18 @@ class Blockchain:
         dt = datetime.datetime.now()
         dt_str = dt.isoformat()
         return dt_str
+    
+    def save_blockchain(blockchain):
+        with open('blockchain.txt', 'w') as file:
+            json.dump(blockchain, file, indent=4)
+
+    def load_blockchain():
+        try:
+            with open('blockchain.txt', 'r') as file:
+                return json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("No existing blockchain found or error in parsing. Starting a new blockchain.")
+            return 0  # or return a new blockchain with just the genesis block
 
 blockchain = Blockchain()
 blockchain.add_block("23123131")
