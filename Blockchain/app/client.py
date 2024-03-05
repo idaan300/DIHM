@@ -32,10 +32,10 @@ def get_tx_req(): #get blockchain
         print("ChAIN=", chain)
         for block in chain["chain"]:
             print("BLOCK=", block["transactions"])
-            # block["user"] = block["transactions"][0]
-            # block["v_file"] = block["transactions"][1]
-            # block["file_data"] = block["transactions"][2]
-            # block["file_size"] = block["transactions"][3]
+            block["user"] = block["transactions"]["user"]
+            block["v_file"] = block["transactions"]["v_file"]
+            block["file_data"] = block["transactions"]["file_data"]
+            block["file_size"] = block["transactions"]["file_size"]
             # for trans in block["transactions"]:
             #     print(trans)
             #     trans["timestamp"] = block["timestamp"]
