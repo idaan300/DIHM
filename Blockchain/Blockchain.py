@@ -11,8 +11,8 @@ class Blockchain:
         genesis.hash = genesis.calc_hash()
         self.chain.append(genesis)
 
-    def create_genesis(self):
-        return Block(["System","Genesis", "empty", "0"],self.getDateTime(), "0")
+    def create_genesis(self): 
+        return Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
