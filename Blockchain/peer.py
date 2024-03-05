@@ -34,7 +34,10 @@ def get_chain():
     chain = []
     #create a new chain from our blockchain
     for block in blockchain.chain:
-        chain.append(block.to_dict())
+        if isinstance(block, dict):
+            chain.append(block)
+        else:
+            chain.append(block.to_dict())
     print(chain)
     print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
