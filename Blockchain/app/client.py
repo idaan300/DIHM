@@ -22,10 +22,25 @@ peers = []
 
 app = Flask(__name__)
 
+def get_tx_req(): #get blockchain
+    global request_tx
+    chain_addr = "{0}/chain".format(ADDR)
+    resp = requests.get(chain_addr)
+    if resp.status_code == 200:
+        content = []
+        chain = json.loads(resp.content.decode())
+        for block in chain["chain"]:
+            for trans in block["transactions"]:
+                trans["index"] = block["index"]
+                trans["hash"] = block["prev_hash"]
+                content.append(trans)
+        request_tx = sorted(content,key=lambda k: k["hash"],reverse=True)
+
+
 @app.route("/")
 def index():
     #get_tx_req()
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR)#,request_tx = request_tx)
+    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
