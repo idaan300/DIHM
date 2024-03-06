@@ -4,7 +4,6 @@ import json
 
 class Blockchain:
 
-
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
         start = self.load_blockchain()

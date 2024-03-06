@@ -37,11 +37,6 @@ def get_tx_req(): #get blockchain
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
-            # for trans in block["transactions"]:
-            #     print(trans)
-            #     trans["timestamp"] = block["timestamp"]
-            #     trans["hash"] = block["prev_hash"]
-            #     content.append(trans)
             content.append(block)
             print(content)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
