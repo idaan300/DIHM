@@ -9,9 +9,10 @@ class user:
     with open('secret.key', 'rb') as key_file:
         print("fernet key found")
         key = key_file.read()
+        print("key=", key)
         
 
-    if key == None:
+    if key == "" or None:
         print("fernet key not found")
         with open('secret.key', 'wb') as key_file:
             key = Fernet.generate_key()
