@@ -73,6 +73,12 @@ def login():
     # GET request - show the login form
     return render_template('login.html')
 
+@app.route('/view', methods=['GET', 'POST'])
+def viewOnly():
+    if not session.get('logged_in'):
+        return redirect("/login")
+    return render_template('view.html')
+
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
 def submit():
