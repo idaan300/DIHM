@@ -21,6 +21,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 peers = []
 
 app = Flask(__name__)
+app.secret_key = '7avQ3nV'  # Set a secret key for security purposes
 
 def get_tx_req(): #get blockchain
     global request_tx
