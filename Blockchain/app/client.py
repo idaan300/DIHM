@@ -2,7 +2,7 @@
 import json
 import os
 import requests
-from user import user
+from user import User
 from flask import Flask, render_template, redirect, request,send_file,session
 from werkzeug.utils import secure_filename
 from app import app
@@ -14,7 +14,7 @@ ADDR = "http://127.0.0.1:80"
 request_tx = []
 #store filename
 files = {}
-admin = user()
+admin = User()
 #destiantion for upload files
 UPLOAD_FOLDER = "app/Uploads"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

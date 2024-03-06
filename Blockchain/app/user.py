@@ -2,7 +2,7 @@ from cryptography.fernet import Fernet
 import json
 import os
 
-class user:
+class User:
     # Example user data
     user1 = {"username": "Joris", "password": "unknown", "user_type": "admin"}
     
