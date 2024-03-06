@@ -14,6 +14,7 @@ ADDR = "http://127.0.0.1:80"
 request_tx = []
 #store filename
 files = {}
+admin = user()
 #destiantion for upload files
 UPLOAD_FOLDER = "app/Uploads"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

@@ -5,13 +5,19 @@ import os
 class user:
     # Example user data
     user1 = {"username": "Joris", "password": "unknown", "user_type": "admin"}
-    key = os.environ.get('FERNET_KEY')
-    cipher_suite = 0
-    if key:
-        fernet = Fernet(key.encode())
-        cipher_suite = fernet
-    else:
+    
+    with open('secret.key', 'rb') as key_file:
+        print("fernet key found")
+        key = key_file.read()
+        
+
+    if key == None:
         print("fernet key not found")
+        with open('secret.key', 'wb') as key_file:
+            key = Fernet.generate_key()
+            key_file.write(key)
+
+    cipher_suite = Fernet(key)#.encode()
 
     def __init__(self):
         #self.index = index
@@ -59,6 +65,4 @@ class user:
     # Function to decrypt data
     def decrypt_data(self,data):
         return self.cipher_suite.decrypt(data.encode()).decode()
-    
-admin = user()
 #admin.save()
