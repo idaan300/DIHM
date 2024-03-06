@@ -2,6 +2,7 @@
 import json
 import os
 import requests
+import user
 from flask import Flask, render_template, redirect, request,send_file,session
 from werkzeug.utils import secure_filename
 from app import app
@@ -56,15 +57,17 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
+        db = user.load()
         # Verify username and password here
         # For example, check against user data in the database
-        if username == "correct_username" and password == "correct_password":
-            # Login success
-            session['logged_in'] = True
-            return redirect("/")  # Redirect to another page, e.g., home
-        else:
-            # Login failed
-            return "Login Failed"
+        for entry in db:
+            if username == entry["username"] and password == entry["password"]:
+                session['logged_in'] = True
+                print(entry["user_type"])
+                return redirect("/")  # Redirect to another page, e.g., home
+            else:
+                # Login failed
+                return "Login Failed"
 
     # GET request - show the login form
     return render_template('login.html')
