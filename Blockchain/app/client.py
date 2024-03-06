@@ -2,7 +2,7 @@
 import json
 import os
 import requests
-from flask import Flask, render_template, redirect, request,send_file
+from flask import Flask, render_template, redirect, request,send_file,session
 from werkzeug.utils import secure_filename
 from app import app
 from timeit import default_timer as timer
@@ -48,6 +48,8 @@ def get_tx_req(): #get blockchain
 
 @app.route("/")
 def index():
+    if not session.get('logged_in'):
+        return redirect("/login")  # Redirect to login if not logged in
     get_tx_req()
     return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
@@ -62,6 +64,7 @@ def login():
         # For example, check against user data in the database
         if username == "correct_username" and password == "correct_password":
             # Login success
+            session['logged_in'] = True
             return redirect("/")  # Redirect to another page, e.g., home
         else:
             # Login failed
