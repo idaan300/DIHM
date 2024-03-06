@@ -40,7 +40,7 @@ class Blockchain:
     
     def getDateTime(self):
         dt = datetime.datetime.now()
-        dt_str = dt.isoformat()
+        dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
         return dt_str
     
     def serializeBlockchain(self,blockchain): #for JSON Dumps

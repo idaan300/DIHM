@@ -51,6 +51,25 @@ def index():
     get_tx_req()
     return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Handle the login logic here
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Verify username and password here
+        # For example, check against user data in the database
+        if username == "correct_username" and password == "correct_password":
+            # Login success
+            return redirect("/")  # Redirect to another page, e.g., home
+        else:
+            # Login failed
+            return "Login Failed"
+
+    # GET request - show the login form
+    return render_template('login.html')
+
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
 def submit():
