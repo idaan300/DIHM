@@ -25,6 +25,7 @@ class User:
         if(start == "null"):
             self.list = []
             self.list.append(self.user1)
+            self.addAccount("stakeholder", "stakeholder", "view")
             self.save(self.list)
         else:
             self.list = start

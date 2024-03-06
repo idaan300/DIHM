@@ -64,8 +64,10 @@ def login():
         for entry in db:
             if username == entry["username"] and password == entry["password"]:
                 session['logged_in'] = True
-                print(entry["user_type"])
-                return redirect("/")  # Redirect to another page, e.g., home
+                if(entry["user_type"] == "admin"):
+                    return redirect("/")  # Redirect to another page, e.g., home
+                if(entry["user_type"] == "view"):
+                    return redirect("/view")
             else:
                 # Login failed
                 return "Login Failed"
@@ -77,7 +79,8 @@ def login():
 def viewOnly():
     if not session.get('logged_in'):
         return redirect("/login")
-    return render_template('view.html')
+    get_tx_req()
+    return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
