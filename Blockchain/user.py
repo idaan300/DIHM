@@ -1,11 +1,17 @@
 from cryptography.fernet import Fernet
 import json
+import os
 
 class user:
     # Example user data
     user1 = {"username": "Joris", "password": "unknown", "user_type": "admin"}
-    key = Fernet.generate_key()
-    cipher_suite = Fernet(key)
+    key = os.environ.get('FERNET_KEY')
+    cipher_suite = 0
+    if key:
+        fernet = Fernet(key.encode())
+        cipher_suite = fernet
+    else:
+        print("fernet key not found")
 
     def __init__(self):
         #self.index = index
@@ -41,6 +47,7 @@ class user:
                 for p in dict:
                     d = json.loads(self.decrypt_data(p))
                     list.append(d)
+                print(list)
                 return list
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing database found or error in parsing. Starting a new database.")

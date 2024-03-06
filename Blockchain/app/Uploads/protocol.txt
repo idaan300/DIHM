@@ -1,0 +1,10 @@
+message: (selfpos), obstakels[], direction
+
+selfpos = (posX,posY,posZ)
+obstakels = [(x,y,z),(x,y,z)....]
+direction = vector
+
+message wordt afgesloten met een newline.
+selfpos is een tuple, alle posities zijn double
+obstakels is een array van  tuples waarin de coordinaten van obstakels in doubles zijn gegeven.
+direction is een vector
