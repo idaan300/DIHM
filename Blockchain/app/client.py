@@ -49,7 +49,7 @@ def index():
     if not session.get('logged_in'):
         return redirect("/login")  # Redirect to login if not logged in
     get_tx_req()
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
+    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=[])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

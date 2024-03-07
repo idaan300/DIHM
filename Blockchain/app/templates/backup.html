@@ -155,37 +155,6 @@
       </form>
     </div>
 
-    <div class="col-sm-4">
-      <h2 class="text-center alert alert-primary">Pending Files</h2>
-      <!-- Loop through pending files -->
-      {% for pending_file in pending_files %}
-      <div class="post_box">
-        <div class="post_box-header">
-          <div
-            style="
-              background: rgb(219, 52, 52) none repeat scroll 0% 0%;
-              box-shadow: rgb(0, 4, 6) 0 0 0 0.2rem;
-            "
-            class="post_box-avatar"
-          >
-            P <!-- Placeholder for first letter of user -->
-          </div>
-          <div class="name-header">{{ pending_file.user }}</div>
-        </div>
-        <div>
-          <div class="post_box-body">
-            <p>
-              {{ pending_file.v_file }} ({{ pending_file.timestamp }}) &#x2192;
-              <a href="{{url_for('download_file',variable = pending_file.v_file)}}"
-                >Download</a
-              >
-            </p>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
     <div class="col-sm-7">
       <h2 class="text-center alert alert-primary">Uploaded Files</h2>
       {% for post in request_tx %}
