@@ -40,7 +40,7 @@ def get_chain():
     return json.dumps({"length" : len(chain), "chain" : chain})
 
 @app.route("/pending", methods=["GET"])
-def get_chain():
+def get_pending():
     # consensus()
     chain = []
     #create a new chain from our blockchain
