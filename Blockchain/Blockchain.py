@@ -97,6 +97,5 @@ class Blockchain:
             return "null"  # or return a new blockchain with just the genesis block
 
 blockchain = Blockchain()
-blockchain.add_block({'user': 'Joris', 'v_file': 'Update', 'file_data': "0", 'file_size': 0})
 
     #print("cur hash: ", block.hash)

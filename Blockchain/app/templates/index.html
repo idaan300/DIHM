@@ -60,6 +60,9 @@
   .request_tx {
     margin: 2.5rem 2.5rem 14rem 2.5rem;
   }
+  .pending_files {
+    margin: 2.5rem 2.5rem 14rem 2.5rem;
+  }
  
   
   /* Post boxes styling */
@@ -168,7 +171,7 @@
             "
             class="post_box-avatar"
           >
-            P <!-- Placeholder for first letter of user -->
+            {{pending_file.user[0]}}
           </div>
           <div class="name-header">{{ pending_file.user }}</div>
         </div>
