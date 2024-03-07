@@ -18,7 +18,7 @@ class Blockchain:
         print(self.chain[0].hash)
 
     def create_genesis(self): 
-        block = Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
+        block = Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
         print("bLOCK CREATED")
         try:
             #print("TESTSSSSS ",json.dumps((block.transactions,block.timestamp, block.prev_hash)))
@@ -27,7 +27,7 @@ class Blockchain:
         except TypeError as e:
             print("Serialization error:", e)
 
-        return Block({'user': 'System', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
+        return Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
