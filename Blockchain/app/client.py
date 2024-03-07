@@ -2,14 +2,16 @@
 import json
 import os
 import requests
+import socket
 from user import User
 from flask import Flask, render_template, redirect, request,send_file,session
 from werkzeug.utils import secure_filename
 from app import app
 from timeit import default_timer as timer
 
-ADDR = "http://127.0.0.1:80"
-
+#ADDR = "http://127.0.0.1:80"
+ADDR = socket.gethostbyname(socket.gethostname())
+print("HOST=", ADDR)
 # Stores all the post transaction in the node
 request_tx = []
 pending_files = []
