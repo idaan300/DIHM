@@ -42,14 +42,30 @@ def get_tx_req(): #get blockchain
             content.append(block)
             print(content)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
-
+def get_pending(): #get blockchain
+    global pending_files
+    chain_addr = "{0}/pending".format(ADDR)
+    resp = requests.get(chain_addr)
+    if resp.status_code == 200:
+        content = []
+        chain = json.loads(resp.content.decode())
+        print("ChAIN=", chain)
+        for block in chain["chain"]:
+            print("BLOCK=", block["transactions"])
+            block["user"] = block["transactions"]["user"]
+            block["v_file"] = block["transactions"]["v_file"]
+            block["file_data"] = block["transactions"]["file_data"]
+            block["file_size"] = block["transactions"]["file_size"]
+            content.append(block)
+            print(content)
+        pending_files = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 
 @app.route("/")
 def index():
     if not session.get('logged_in'):
         return redirect("/login")  # Redirect to login if not logged in
     get_tx_req()
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=[])
+    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
