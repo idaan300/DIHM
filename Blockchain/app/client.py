@@ -12,6 +12,7 @@ ADDR = "http://127.0.0.1:80"
 
 # Stores all the post transaction in the node
 request_tx = []
+pending_files = []
 #store filename
 files = {}
 admin = User()
