@@ -189,11 +189,11 @@
               <a href="{{url_for('download_file',variable = pending_file.v_file)}}"
                 >Download</a> <br>
                 {{ pending_file.description }} <br>
-              <form action="{{ '{0}/mine'.format(ADDR) }}" method="POST" style="display: inline;">
+              <form action="{{ url_for('approve') }}" method="POST" style="display: inline;">
                 <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
                 <button type="submit" class="btn btn-success">Approve</button>
               </form>
-              <form action="{{ node_address }}/delete" method="POST" style="display: inline;">
+              <form action="{{ url_for('delete') }}" method="POST" style="display: inline;">
                 <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
                 <button type="submit" class="btn btn-danger">Disapprove</button>
               </form>

@@ -99,6 +99,17 @@ def viewOnly():
     get_tx_req()
     return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
+@app.route('/approve', methods=['GET', 'POST'])
+def approve():
+    link = "{0}/mine".format(ADDR)
+    return redirect(link)
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
+    link = "{0}/delete".format(ADDR)
+    return redirect(link)
+
+
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
 def submit():
