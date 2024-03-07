@@ -96,6 +96,7 @@ def login():
 def viewOnly():
     if not session.get('logged_in'):
         return redirect("/login")
+    get_pending()
     get_tx_req()
     return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
 
