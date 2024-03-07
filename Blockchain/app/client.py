@@ -44,7 +44,9 @@ def get_tx_req(): #get blockchain
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 def get_pending(): #get blockchain
     global pending_files
+    print("{0}")
     chain_addr = "{0}/pending".format(ADDR)
+    print(chain_addr)
     resp = requests.get(chain_addr)
     if resp.status_code == 200:
         content = []
