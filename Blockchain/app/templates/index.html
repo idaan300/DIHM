@@ -132,7 +132,7 @@
 </style>
 <div class="container-fluid">
   <div class="row" style="padding-top: 10px">
-    <div class="col-sm-4" style="">
+    <div class="col-sm-4">
       <h2 class="text-center alert alert-primary">Upload a File</h2>
       <form action="/submit" method="POST" enctype="multipart/form-data">
         <div class="form-group">
@@ -142,6 +142,16 @@
             class="form-control"
             name="user"
             placeholder="Enter Your Full Name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Description:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="description"
+            placeholder="Describe Changes Here"
           />
         </div>
 
@@ -189,7 +199,7 @@
       {% endfor %}
     </div>
 
-    <div class="col-sm-7">
+    <div class="col-sm-4">
       <h2 class="text-center alert alert-primary">Uploaded Files</h2>
       {% for post in request_tx %}
       <div class="post_box">

@@ -103,6 +103,7 @@ def viewOnly():
 def submit():
     start = timer()
     user = request.form["user"]
+    description = request.form["description"]
     up_file = request.files["v_file"]
     
     #save the uploaded file in destination
@@ -114,6 +115,7 @@ def submit():
     #create a transaction object
     post_object = {
         "user": user, #user name
+        "description": description, #user name
         "v_file" : up_file.filename, #filename
         "file_data" : str(up_file.stream.read()), #file data
         "file_size" : file_states   #file size

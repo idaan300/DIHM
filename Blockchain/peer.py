@@ -18,7 +18,7 @@ def index():
 # new transaction added to the block. When user selects to submit new request
 def new_transaction():
     file_data = request.get_json() #get json response
-    required_fields = ["user", "v_file", "file_data", "file_size"]
+    required_fields = ["user", "description","v_file", "file_data", "file_size"]
     #if any of the fields is missing dont append and throw the message
     for field in required_fields:
         if not file_data.get(field):
