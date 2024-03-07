@@ -102,11 +102,15 @@ def viewOnly():
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():
     link = "{0}/mine".format(ADDR)
+    print(link)
     return redirect(link)
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
     link = "{0}/delete".format(ADDR)
+    print(link)
+    resp = requests.get(link)
+    print(resp)
     return redirect(link)
 
 
