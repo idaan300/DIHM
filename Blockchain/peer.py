@@ -24,8 +24,8 @@ def new_transaction():
         if not file_data.get(field):
             return "Transaction does not have valid fields!", 404
     #else append it to pending transaction
-    #blockchain.add_pending(file_data)
-    blockchain.add_block(file_data)
+    blockchain.add_pending(file_data)
+    #blockchain.add_block(file_data)
     return "Success", 201
 
 @app.route("/chain", methods=["GET"])

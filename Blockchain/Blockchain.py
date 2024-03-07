@@ -37,6 +37,14 @@ class Blockchain:
         self.chain.append(new_block)
         self.save_blockchain(self.chain)
     
+    def add_pending(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
+        prev_block = self.chain[-1]
+        print("previous block = ", prev_block)
+        new_block = Block(data,self.getDateTime(), prev_block.hash)
+        new_block.hash = new_block.calc_hash()
+        self.pending.append(new_block)
+        self.save_pending(self.chain)
+    
     def getDateTime(self):
         dt = datetime.datetime.now()
         dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
@@ -58,6 +66,25 @@ class Blockchain:
     def load_blockchain(self):
         try:
             with open('blockchain.txt', 'r') as file:
+                chain = []
+                dict = json.load(file)
+                print("dict: ",dict)
+                for block in dict:
+                    b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
+                    chain.append(b)
+                return chain
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("No existing blockchain found or error in parsing. Starting a new blockchain.")
+            return "null"  # or return a new blockchain with just the genesis block
+        
+    def save_pending(self, pending):
+        with open('pending.txt', 'w') as file:
+            chain = self.serializeBlockchain(pending)
+            json.dump(chain, file, indent=4)
+
+    def load_pending(self):
+        try:
+            with open('pending.txt', 'r') as file:
                 chain = []
                 dict = json.load(file)
                 print("dict: ",dict)
