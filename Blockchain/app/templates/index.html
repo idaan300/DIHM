@@ -187,8 +187,8 @@
             <p>
               {{ pending_file.v_file }} ({{ pending_file.timestamp }}) &#x2192;
               <a href="{{url_for('download_file',variable = pending_file.v_file)}}"
-                >Download</a
-              >
+                >Download</a> <br>
+                {{ pending_file.description }} <br>
             </p>
           </div>
         </div>
@@ -217,8 +217,8 @@
             <p>
               {{ post.v_file }} ({{ post.timestamp }}) &#x2192;
               <a href="{{url_for('download_file',variable = post.v_file)}}"
-                >Download</a
-              >
+                >Download</a> <br>
+                {{ pending_file.description }} <br>
             </p>
           </div>
         </div>
