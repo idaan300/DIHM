@@ -30,20 +30,30 @@ class Blockchain:
         return Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
     
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
-        prev_block = self.chain[-1]
-        print("previous block = ", prev_block)
-        new_block = Block(data,self.getDateTime(), prev_block.hash)
+        #prev_block = self.chain[-1]
+        new_block = data#Block(data,self.getDateTime(), prev_block.hash)
         new_block.hash = new_block.calc_hash()
         self.chain.append(new_block)
         self.save_blockchain(self.chain)
     
     def add_pending(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
-        print("previous block = ", prev_block)
         new_block = Block(data,self.getDateTime(), prev_block.hash)
         new_block.hash = new_block.calc_hash()
         self.pending.append(new_block)
         self.save_pending(self.chain)
+    
+    def mine(self):
+        if(len(self.pending) > 0): #if there is atleast one pending transaction
+            last_block = self.chain[-1] #get last block
+            # Creates a new block to be added to the chain
+            new_block = self.chain.pop()
+
+            #hashl = self.p_o_w(new_block)
+            #add the block
+            self.add_block(new_block)
+        else:
+            return False
     
     def getDateTime(self):
         dt = datetime.datetime.now()

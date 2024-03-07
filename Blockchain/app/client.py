@@ -34,8 +34,8 @@ def get_tx_req(): #get blockchain
         content = []
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
-            print("BLOCK=", block["transactions"])
             block["user"] = block["transactions"]["user"]
+            block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
@@ -49,10 +49,9 @@ def get_pending(): #get blockchain
     if resp.status_code == 200:
         content = []
         chain = json.loads(resp.content.decode())
-        print("ChAIN=", chain)
         for block in chain["chain"]:
-            print("BLOCK=", block["transactions"])
             block["user"] = block["transactions"]["user"]
+            block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]

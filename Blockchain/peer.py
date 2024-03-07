@@ -50,4 +50,13 @@ def get_pending():
     print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
 
+@app.route("/mine", methods=["GET"])
+#Mines pending tx blocks and call mine method in blockchain
+def mine_uncofirmed_transactions():
+    result = blockchain.mine()
+    if result:
+        return "Block #{0} mined successfully.".format(result)
+    else:
+        return "No pending transactions to mine."
+
 app.run(host="0.0.0.0", port=80)
