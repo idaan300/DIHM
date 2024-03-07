@@ -54,6 +54,14 @@ class Blockchain:
             self.add_block(new_block)
         else:
             return False
+    def delete(self):
+        if(len(self.pending) > 0): #if there is atleast one pending transaction
+            last_block = self.chain[-1] #get last block
+            # Creates a new block to be added to the chain
+            new_block = self.chain.pop()
+            self.save_pending(self.chain)
+        else:
+            return False
     
     def getDateTime(self):
         dt = datetime.datetime.now()

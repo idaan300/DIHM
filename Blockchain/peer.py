@@ -52,10 +52,19 @@ def get_pending():
 
 @app.route("/mine", methods=["GET"])
 #Mines pending tx blocks and call mine method in blockchain
-def mine_uncofirmed_transactions():
+def mine():
     result = blockchain.mine()
     if result:
         return "Block #{0} mined successfully.".format(result)
+    else:
+        return "No pending transactions to mine."
+    
+@app.route("/delete", methods=["GET"])
+#Mines pending tx blocks and call mine method in blockchain
+def delete():
+    result = blockchain.delete()
+    if result:
+        return "Block #{0} removed successfully.".format(result)
     else:
         return "No pending transactions to mine."
 

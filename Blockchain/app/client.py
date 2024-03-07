@@ -35,7 +35,7 @@ def get_tx_req(): #get blockchain
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
             block["user"] = block["transactions"]["user"]
-            block["description"] = block["transactions"]["description"]
+            block["user"] = block["transactions"]["user"]
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
