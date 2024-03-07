@@ -10,7 +10,7 @@ from app import app
 from timeit import default_timer as timer
 
 #ADDR = "http://127.0.0.1:80"
-ADDR = "https://" + socket.gethostbyname(socket.gethostname())
+ADDR = "https://" + socket.gethostbyname(socket.gethostname()) + ":80"
 print("HOST=", ADDR)
 # Stores all the post transaction in the node
 request_tx = []
