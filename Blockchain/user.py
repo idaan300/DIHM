@@ -42,12 +42,15 @@ class User:
                 dict = json.load(file)
                 for p in dict:
                     d = json.loads(self.decrypt_data(p))
+                    print(d)
                     if d['name'] == name:
+                        print("password changed to", new_password)
                         d['password'] = new_password
                     list.append(d)
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing database found or error in parsing. Starting a new database.")
         self.save(self.list)
+        print("saved=", list)
 
 
     def save(self, list):
