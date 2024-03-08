@@ -43,7 +43,7 @@ class User:
                 for p in dict:
                     d = json.loads(self.decrypt_data(p))
                     print(d)
-                    if d['name'] == name:
+                    if d['username'] == name:
                         print("password changed to", new_password)
                         d['password'] = new_password
                     list.append(d)
