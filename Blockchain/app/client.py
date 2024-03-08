@@ -113,7 +113,7 @@ def delete():
     resp = requests.get(link)
     return redirect("/")
 
-@app.route('/account', methods=['POST'])
+@app.route('/account', methods=['GET','POST'])
 def create_account():
     if request.method == 'POST':
         # Handle the login logic here
