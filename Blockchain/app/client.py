@@ -131,6 +131,7 @@ def change_password():
         # Handle the login logic here
         if not session.get('name'):
             return redirect("/login")
+        print(session.get('name'))
         name = session.get('name')
         password = request.form['password']
         admin.changePass(name,password)
