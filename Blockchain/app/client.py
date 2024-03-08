@@ -88,10 +88,7 @@ def login():
                     return redirect("/")  # Redirect to another page, e.g., home
                 if(entry["user_type"] == "view"):
                     return redirect("/view")
-            else:
-                # Login failed
-                return "Login Failed"
-
+        return "Login Failed"
     # GET request - show the login form
     return render_template('login.html')
 
