@@ -46,19 +46,14 @@ class Blockchain:
     def mine(self):
         if(len(self.pending) > 0): #if there is atleast one pending transaction
             last_block = self.chain[-1] #get last block
-            # Creates a new block to be added to the chain
-            new_block = self.chain.pop()
-
+            new_block = self.pending.pop()
             #hashl = self.p_o_w(new_block)
-            #add the block
             self.add_block(new_block)
         else:
             return False
     def delete(self):
         if(len(self.pending) > 0): #if there is atleast one pending transaction
-            last_block = self.chain[-1] #get last block
-            # Creates a new block to be added to the chain
-            new_block = self.chain.pop()
+            self.pending.pop()
             self.save_pending(self.chain)
         else:
             return False
