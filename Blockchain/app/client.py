@@ -113,6 +113,17 @@ def delete():
     resp = requests.get(link)
     return redirect("/")
 
+@app.route('/account', methods=['GET', 'POST'])
+def create_account():
+    if request.method == 'POST':
+        # Handle the login logic here
+        username = request.form['username']
+        password = request.form['password']
+        user_type = request.form['user_type']
+
+        admin.addAccount(username,password,user_type)
+    return render_template('account.html')
+
 
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
