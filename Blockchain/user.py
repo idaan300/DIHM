@@ -53,6 +53,7 @@ class User:
                 for p in dict:
                     d = json.loads(self.decrypt_data(p))
                     list.append(d)
+                print(list)
                 return list
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing database found or error in parsing. Starting a new database.")
