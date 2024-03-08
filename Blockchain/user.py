@@ -34,7 +34,6 @@ class User:
         new_user = {"username": name, "password": password, "user_type": type}
         self.list.append(new_user)
         self.save(self.list)
-        self.load(self.list)
 
 
     def save(self, list):
@@ -51,7 +50,6 @@ class User:
             with open('protected.txt', 'r') as file:
                 list = []
                 dict = json.load(file)
-                print("dict: ",dict)
                 for p in dict:
                     d = json.loads(self.decrypt_data(p))
                     list.append(d)
