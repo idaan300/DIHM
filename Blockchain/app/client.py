@@ -80,6 +80,7 @@ def login():
         # Verify username and password here
         # For example, check against user data in the database
         for entry in db:
+            print("Entry --- > ", entry)
             if username == entry["username"] and password == entry["password"]:
                 session['logged_in'] = True
                 if(entry["user_type"] == "admin"):
@@ -122,6 +123,7 @@ def create_account():
         user_type = request.form['user_type']
 
         admin.addAccount(username,password,user_type)
+        return redirect("/")
     return render_template('account.html')
 
 
