@@ -77,6 +77,7 @@ def login():
         password = request.form['password']
         
         db = admin.load()
+        print(db)
         # Verify username and password here
         # For example, check against user data in the database
         for entry in db:
