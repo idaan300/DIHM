@@ -9,8 +9,8 @@ from werkzeug.utils import secure_filename
 from app import app
 from timeit import default_timer as timer
 
-#ADDR = "http://127.0.0.1:80"
-ADDR = "https://" + socket.gethostbyname(socket.gethostname()) + ":80"
+ADDR = "http://127.0.0.1:80"
+#ADDR = "https://" + socket.gethostbyname(socket.gethostname()) + ":80"
 print("HOST=", ADDR)
 # Stores all the post transaction in the node
 request_tx = []
@@ -104,16 +104,15 @@ def viewOnly():
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():
     link = "{0}/mine".format(ADDR)
-    print(link)
-    return redirect(link)
+    resp = requests.get(link)
+    return redirect("/")
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
     link = "{0}/delete".format(ADDR)
     print(link)
     resp = requests.get(link)
-    print(resp)
-    return redirect(link)
+    return redirect("/")
 
 
 @app.route("/submit", methods=["POST"])
