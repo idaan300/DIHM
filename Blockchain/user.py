@@ -49,7 +49,7 @@ class User:
                     list.append(d)
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing database found or error in parsing. Starting a new database.")
-        self.save(self.list)
+        self.save(list)
         print("saved=", list)
 
 
