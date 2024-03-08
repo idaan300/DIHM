@@ -133,7 +133,7 @@ def change_password():
             return redirect("/login")
         print(session.get('name'))
         name = session.get('name')
-        password = request.form['password']
+        password = request.form['new_password']
         admin.changePass(name,password)
         return redirect("/")
     return render_template('change_password.html')
