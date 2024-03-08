@@ -35,6 +35,20 @@ class User:
         self.list.append(new_user)
         self.save(self.list)
 
+    def changePass(self, name, new_password):
+        list = []
+        try:
+            with open('protected.txt', 'r') as file:
+                dict = json.load(file)
+                for p in dict:
+                    d = json.loads(self.decrypt_data(p))
+                    if d['name'] == name:
+                        d['password'] = new_password
+                    list.append(d)
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("No existing database found or error in parsing. Starting a new database.")
+        self.save(self.list)
+
 
     def save(self, list):
         with open('protected.txt', 'w') as file:

@@ -84,6 +84,7 @@ def login():
             print("Entry --- > ", entry)
             if username == entry["username"] and password == entry["password"]:
                 session['logged_in'] = True
+                session['name'] = entry["username"]
                 if(entry["user_type"] == "admin"):
                     return redirect("/")  # Redirect to another page, e.g., home
                 if(entry["user_type"] == "view"):
@@ -123,6 +124,18 @@ def create_account():
         admin.addAccount(username,password,user_type)
         return redirect("/")
     return render_template('account.html')
+
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    if request.method == 'POST':
+        # Handle the login logic here
+        if not session.get('name'):
+            return redirect("/login")
+        name = session.get('name')
+        password = request.form['password']
+        admin.changePass(name,password)
+        return redirect("/")
+    return render_template('change_password.html')
 
 
 @app.route("/submit", methods=["POST"])
