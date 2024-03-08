@@ -25,7 +25,7 @@ class User:
         if(start == "null"):
             self.list = []
             self.list.append(self.user1)
-            self.addAccount("stakeholder", "stakeholder", "view")
+            #self.addAccount("stakeholder", "stakeholder", "view")
             self.save(self.list)
         else:
             self.list = start
@@ -34,6 +34,7 @@ class User:
         new_user = {"username": name, "password": password, "user_type": type}
         self.list.append(new_user)
         self.save(self.list)
+        self.load(self.list)
 
 
     def save(self, list):
