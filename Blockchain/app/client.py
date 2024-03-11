@@ -53,7 +53,7 @@ def get_pending(): #get blockchain
         content = []
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
-            block["user"] = block["transactions"]["user"]
+            block["user"] = session['name']#block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]

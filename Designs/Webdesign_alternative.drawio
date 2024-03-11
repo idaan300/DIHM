@@ -1,0 +1,118 @@
+<mxfile host="app.diagrams.net" modified="2024-03-11T14:20:36.391Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" etag="mLBqEXKAsxG3RbOIsKME" version="23.1.5" type="device">
+  <diagram name="Page-1" id="7l78DpCOJmXkoFOGafl5">
+    <mxGraphModel dx="2074" dy="1114" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry width="1920" height="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-3" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry width="1920" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-4" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://i.gyazo.com/a97b149d6ed65168a0f0d49f9e61fdd1.png;" vertex="1" parent="1">
+          <mxGeometry width="1920" height="84.8" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="80" width="20" height="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-6" value="&lt;font style=&quot;font-size: 23px;&quot;&gt;Blockchain Network&lt;span style=&quot;font-weight: bold; white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;b&gt;Create Account&lt;/b&gt;&lt;span style=&quot;font-weight: bold; white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;b&gt;Change Password&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry y="84.8" width="1900" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-7" value="&lt;font style=&quot;font-size: 28px;&quot;&gt;&lt;b&gt;Upload File&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="160" width="500" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-8" value="&lt;font style=&quot;font-size: 28px;&quot;&gt;&lt;b&gt;Pending Files&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="160" width="1330" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-9" value="&lt;font style=&quot;font-size: 28px;&quot;&gt;&lt;b&gt;Uploaded Files&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="410" width="1340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-10" value="&lt;p style=&quot;line-height: 120%;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="480" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-11" value="&lt;font style=&quot;font-size: 25px;&quot;&gt;Description:&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="250" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-12" value="&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;i style=&quot;font-size: 20px;&quot;&gt;Enter description:&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-13" value="&lt;font style=&quot;font-size: 25px;&quot;&gt;Upload File:&amp;nbsp;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="430" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-14" value="Choose&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;File" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="170" y="435" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-15" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Submit&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="20" y="490" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-16" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&amp;lt;File Name&amp;gt; (Timestamp) --&amp;gt; &lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;u style=&quot;&quot;&gt;Download&lt;/u&gt;&lt;/font&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="560" y="230" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-17" value="Icon" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="570" y="230" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-18" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;b style=&quot;&quot;&gt;User Name&lt;/b&gt;&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="630" y="235" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-20" value="&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;i style=&quot;font-size: 14px;&quot;&gt;File description: ...........&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="310" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-21" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&amp;lt;File Name&amp;gt; (Timestamp) --&amp;gt; &lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;u style=&quot;&quot;&gt;Download&lt;/u&gt;&lt;/font&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="560" y="490" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-23" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;b style=&quot;&quot;&gt;User Name&lt;/b&gt;&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="630" y="495" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-25" value="Icon" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="570" y="490" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-27" value="&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;i style=&quot;font-size: 14px;&quot;&gt;File description: ...........&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="570" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-29" value="Approve" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="700" y="360" width="90" height="38.12" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-30" value="Disapprove" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="800" y="360" width="90" height="38.12" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-33" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&amp;lt;File Name&amp;gt; (Timestamp) --&amp;gt; &lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;u style=&quot;&quot;&gt;Download&lt;/u&gt;&lt;/font&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="920" y="490" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-34" value="Icon" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="930" y="490" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-35" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&amp;lt;File Name&amp;gt; (Timestamp) --&amp;gt; &lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;u style=&quot;&quot;&gt;Download&lt;/u&gt;&lt;/font&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="490" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-36" value="Icon" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="490" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-37" value="&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;i style=&quot;font-size: 14px;&quot;&gt;File description: ...........&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="920" y="570" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-38" value="&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;i style=&quot;font-size: 14px;&quot;&gt;File description: ...........&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1275" y="570" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-39" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="sssrIjcRoUl1OK7sgcCK-21" target="sssrIjcRoUl1OK7sgcCK-33">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="990" y="480" as="sourcePoint" />
+            <mxPoint x="1040" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-40" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1230" y="560" as="sourcePoint" />
+            <mxPoint x="1275" y="559.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-42" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;b style=&quot;&quot;&gt;User Name&lt;/b&gt;&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="985" y="495" width="470" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sssrIjcRoUl1OK7sgcCK-43" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;b style=&quot;&quot;&gt;User Name&lt;/b&gt;&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="495" width="470" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
