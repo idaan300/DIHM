@@ -53,7 +53,7 @@ def get_pending(): #get blockchain
         content = []
         chain = json.loads(resp.content.decode())
         for block in chain["chain"]:
-            block["user"] = session['name']#block["transactions"]["user"]
+            block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
@@ -143,7 +143,7 @@ def change_password():
 # When new transaction is created it is processed and added to transaction
 def submit():
     start = timer()
-    user = request.form["user"]
+    user = session['name']#request.form["user"]
     description = request.form["description"]
     up_file = request.files["v_file"]
     
