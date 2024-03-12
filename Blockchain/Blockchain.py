@@ -15,7 +15,6 @@ class Blockchain:
             self.save_blockchain(self.chain)
         else:
             self.chain = start
-        print(self.chain[0].hash)
 
     def create_genesis(self): 
         block = Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
@@ -58,6 +57,23 @@ class Blockchain:
         else:
             return False
     
+    def check_chain_validity(this, chain):
+        result = True
+        prev_hash = "0"
+        print(chain)
+        #for every block in the chain
+        for block in chain:
+            block_hash = block.hash#block["hash"] #get the hash of this block and check if its a valid hash
+            print("previous hash = ", prev_hash)
+            print("current hash = ", block_hash)
+            if(block.calc_hash() == block_hash) and prev_hash == block.prev_hash:
+                block.hash = block_hash #update the hash
+                prev_hash = block_hash #update the previous hash
+            else:
+                print("BlockChain INVALID")
+                result = False
+        return result
+    
     def getDateTime(self):
         dt = datetime.datetime.now()
         dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
@@ -69,7 +85,6 @@ class Blockchain:
             b = Block.to_dict()
             chain.append(b)
         return chain
-
     
     def save_blockchain(self, blockchain):
         with open('blockchain.txt', 'w') as file:
@@ -81,7 +96,6 @@ class Blockchain:
             with open('blockchain.txt', 'r') as file:
                 chain = []
                 dict = json.load(file)
-                print("dict: ",dict)
                 for block in dict:
                     b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
                     chain.append(b)
@@ -110,5 +124,5 @@ class Blockchain:
             return "null"  # or return a new blockchain with just the genesis block
 
 blockchain = Blockchain()
-
+#blockchain.check_chain_validity(blockchain.chain)
     #print("cur hash: ", block.hash)

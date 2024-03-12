@@ -36,6 +36,7 @@ def get_chain():
     for block in blockchain.chain:
         chain.append(block.to_dict())
     print(chain)
+    blockchain.check_chain_validity(chain)
     print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
 
