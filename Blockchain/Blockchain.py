@@ -6,6 +6,7 @@ class Blockchain:
 
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
+        print("loading blockchain from txt")
         start = self.load_blockchain()
         if(start == "null"):
             self.chain = [] # blockchain
@@ -63,7 +64,7 @@ class Blockchain:
         print(chain)
         #for every block in the chain
         for block in chain:
-            block_hash = block.hash#block["hash"] #get the hash of this block and check if its a valid hash
+            block_hash = block["hash"] #get the hash of this block and check if its a valid hash
             print("previous hash = ", prev_hash)
             print("current hash = ", block_hash)
             if(block.calc_hash() == block_hash) and prev_hash == block.prev_hash:
@@ -97,6 +98,7 @@ class Blockchain:
                 chain = []
                 dict = json.load(file)
                 for block in dict:
+                    print("entry:",block)
                     b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
                     chain.append(b)
                 return chain
@@ -123,6 +125,6 @@ class Blockchain:
             print("No existing blockchain found or error in parsing. Starting a new blockchain.")
             return "null"  # or return a new blockchain with just the genesis block
 
-blockchain = Blockchain()
+#blockchain = Blockchain()
 #blockchain.check_chain_validity(blockchain.chain)
     #print("cur hash: ", block.hash)

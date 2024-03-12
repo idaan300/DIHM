@@ -1,3 +1,15 @@
 [
-    {"length": 4, "chain": [{"transactions": {"user": "System", "description": "File created by system", "v_file": "Genesis", "file_data": "0", "file_size": 0}, "timestamp": "2024-03-08 09:53:20", "prev_hash": "0", "nonce": 0, "hash": "6f09ebcb3950b9ce5c65b296c8431bb8fa740c1eef1f4ee0fbe876a9c58b0040"}, {"transactions": {"user": "Joris", "description": "Testing Approve function", "v_file": "README.md", "file_data": "b''", "file_size": 83}, "timestamp": "2024-03-08 09:58:25", "prev_hash": "6f09ebcb3950b9ce5c65b296c8431bb8fa740c1eef1f4ee0fbe876a9c58b0040", "nonce": 0, "hash": "709a3d2149a8d36f5d19fc53c3cb8b8c1371eb1d44f7837130719ac483fb8c72"}, {"transactions": {"user": "Joris", "description": "Upload test", "v_file": "protected.txt", "file_data": "b''", "file_size": 196}, "timestamp": "2024-03-11 13:02:14", "prev_hash": "709a3d2149a8d36f5d19fc53c3cb8b8c1371eb1d44f7837130719ac483fb8c72", "nonce": 0, "hash": "04201de9b6122891d09e784dc487303804648505526b69093487b3e0d047919b"}, {"transactions": {"user": "Administrator", "description": "User assignment automatically now", "v_file": "blockchain.txt", "file_data": "b''", "file_size": 365}, "timestamp": "2024-03-11 16:54:38", "prev_hash": "04201de9b6122891d09e784dc487303804648505526b69093487b3e0d047919b", "nonce": 0, "hash": "e419ccdf118c9dd1be8980e63783d9b06ef6d82c2b79af3dfa1855cf45747740"}]}
+    {
+        "transactions": {
+            "user": "System",
+            "description": "File created by system",
+            "v_file": "Genesis",
+            "file_data": "0",
+            "file_size": 0
+        },
+        "timestamp": "2024-03-12 13:16:36",
+        "prev_hash": "0",
+        "nonce": 0,
+        "hash": "32d9b888611bc3dbf035f758e27dc521d15a23001f172ecf7a3b49468bba944c"
+    }
 ]
