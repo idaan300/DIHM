@@ -64,11 +64,12 @@ class Blockchain:
         print(chain)
         #for every block in the chain
         for block in chain:
+            b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
             block_hash = block["hash"] #get the hash of this block and check if its a valid hash
-            print("previous hash = ", prev_hash)
+            print("previous hash = ", b.prev_hash)
             print("current hash = ", block_hash)
-            if(block.calc_hash() == block_hash) and prev_hash == block.prev_hash:
-                block.hash = block_hash #update the hash
+            if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
+                b.hash = block_hash #update the hash
                 prev_hash = block_hash #update the previous hash
             else:
                 print("BlockChain INVALID")
