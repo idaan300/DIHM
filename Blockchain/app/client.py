@@ -42,12 +42,10 @@ def get_tx_req(): #get blockchain
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
             content.append(block)
-            print(content)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 def get_pending(): #get blockchain
     global pending_files
     chain_addr = "{0}/pending".format(ADDR)
-    print(chain_addr)
     resp = requests.get(chain_addr)
     if resp.status_code == 200:
         content = []
@@ -66,6 +64,7 @@ def getValidity():
     resp = requests.get(address)
     if resp.status_code == 200:
         code = resp
+        print("RECEIVED CODE = ", code)
         if(code=="Chain In Order"):
             print("Returning True")
             return True
@@ -122,7 +121,6 @@ def approve():
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
     link = "{0}/delete".format(ADDR)
-    print(link)
     resp = requests.get(link)
     return redirect("/")
 

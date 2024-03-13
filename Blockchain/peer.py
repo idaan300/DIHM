@@ -32,6 +32,7 @@ def new_transaction():
 @app.route("/chain", methods=["GET"])
 def get_chain():
     global validity
+    print("global validity=", validity)
     chain = []
     #create a new chain from our blockchain
     for block in blockchain.chain:
