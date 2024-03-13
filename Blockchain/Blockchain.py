@@ -95,8 +95,8 @@ class Blockchain:
                 prev_hash = block_hash #update the previous hash
             else:
                 print("======== HASH IN ORDER =========")
-                print("Gen Hash = ", block_hash)
-                prev_hash = block_hash
+                print("Gen Hash = ", block["hash"])
+                prev_hash = block["hash"]
         return result
     
     def getDateTime(self):
