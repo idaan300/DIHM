@@ -82,7 +82,6 @@ class Blockchain:
                     if(b.calc_hash() == block_hash):
                         if prev_hash == b.prev_hash:
                             b.hash = block_hash #update the hash
-                            prev_hash = block_hash #update the previous hash
                             print("======== HASHES IN ORDER =========")
                         else:
                             print("prev hash invalid")
@@ -93,6 +92,7 @@ class Blockchain:
                 else:
                     print("Hash too easy!")
                     result = False
+                prev_hash = block_hash #update the previous hash
         return result
     
     def getDateTime(self):
