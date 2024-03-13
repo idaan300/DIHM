@@ -66,7 +66,7 @@ def getValidity():
     resp = requests.get(address)
     if resp.status_code == 200:
         code = resp
-        if(code=="Chain in order"):
+        if(code=="Chain In Order"):
             return True
         else:
             return False
