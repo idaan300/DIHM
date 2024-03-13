@@ -64,14 +64,21 @@
     margin: 2.5rem 2.5rem 14rem 2.5rem;
   }
  
-  
   /* Post boxes styling */
   .post_box {
-    background: rgb(131, 251, 245);
+    /* background: rgb(131, 251, 245);*/
     padding: 1.2rem 0 0 1.2rem;
     margin-top: 0;
     margin-bottom: 0.8rem;
     border: 0.1rem solid #7f8c8d;
+  }
+
+  .post_box--valid {
+    background: green;
+  }
+
+  .post_box--invalid {
+    background: red;
   }
 
   .post_box-header {
@@ -198,7 +205,7 @@
     <div class="col-sm-4">
       <h2 class="text-center alert alert-primary">Uploaded Files</h2>
       {% for post in request_tx %}
-      <div class="post_box">
+      <div class="post_box{% if validity %} post_box--valid{% else %} post_box--invalid{% endif %}">
         <div class="post_box-header">
           <div
             style="

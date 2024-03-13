@@ -63,6 +63,11 @@ def get_pending(): #get blockchain
 
 def getValidity():
     address="{0}/valid".format(ADDR)
+    resp = requests.get(address)
+    if resp.status_code == 200:
+        bool, code = resp
+        return bool
+
 
 @app.route("/")
 def index():
@@ -70,7 +75,7 @@ def index():
         return redirect("/login")  # Redirect to login if not logged in
     get_pending()
     get_tx_req()
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files)
+    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

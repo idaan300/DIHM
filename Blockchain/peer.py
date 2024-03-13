@@ -45,9 +45,9 @@ def get_chain():
 def getValid():
     global validity
     if validity == True:
-        return "Chain In Order"
+        return True, "Chain In Order"
     else:
-        return "Problem in Chain"
+        return False, "Problem in Chain"
 
 @app.route("/pending", methods=["GET"])
 def get_pending():
