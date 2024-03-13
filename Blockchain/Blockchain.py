@@ -79,12 +79,16 @@ class Blockchain:
                 print("current hash = ", block_hash)
                 print("recalculated hash = ", b.calc_hash)
                 if block_hash.startswith('0' * self.difficulty):
-                    if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
-                        b.hash = block_hash #update the hash
-                        prev_hash = block_hash #update the previous hash
-                        print("======== HASHES IN ORDER =========")
+                    if(b.calc_hash() == block_hash):
+                        if prev_hash == b.prev_hash:
+                            b.hash = block_hash #update the hash
+                            prev_hash = block_hash #update the previous hash
+                            print("======== HASHES IN ORDER =========")
+                        else:
+                            print("prev hash invalid")
+                            result = False
                     else:
-                        print("BlockChain INVALID")
+                        print("Cur and cal hash invalid")
                         result = False
                 else:
                     print("Hash too easy!")
