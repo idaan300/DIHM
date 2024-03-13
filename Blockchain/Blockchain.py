@@ -6,7 +6,8 @@ class Blockchain:
 
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
-        print("loading blockchain from txt")
+        difficulty = 3
+        #print("loading blockchain from txt")
         start = self.load_blockchain()
         if(start == "null"):
             self.chain = [] # blockchain
@@ -39,18 +40,28 @@ class Blockchain:
     def add_pending(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         prev_block = self.chain[-1]
         new_block = Block(data,self.getDateTime(), prev_block.hash)
-        new_block.hash = new_block.calc_hash()
+        #new_block.hash = new_block.calc_hash()
         self.pending.append(new_block)
         self.save_pending(self.chain)
     
     def mine(self):
         if(len(self.pending) > 0): #if there is atleast one pending transaction
-            last_block = self.chain[-1] #get last block
             new_block = self.pending.pop()
+            new_block.hash = self.proofOfWork(new_block)
             #hashl = self.p_o_w(new_block)
             self.add_block(new_block)
         else:
             return False
+        
+    def proofOfWork(self, Block b):
+        for nonce in range(1000000):
+            Block.nonce = nonce
+            temphash = Block.calc_hash()
+            if temphash.startswith('0' * self.difficulty):
+                print("HASHHHHHH FOUND =======", temphash)
+                return temphash
+        return -1
+
     def delete(self):
         if(len(self.pending) > 0): #if there is atleast one pending transaction
             self.pending.pop()
