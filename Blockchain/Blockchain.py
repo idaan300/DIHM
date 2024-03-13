@@ -75,14 +75,14 @@ class Blockchain:
             if block["prev_hash"] != "0":
                 b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
                 block_hash = block["hash"] #get the hash of this block and check if its a valid hash
-                print("previous hash = ", b.prev_hash)
-                print("current hash = ", block_hash)
-                print("recalculated hash = ", b.calc_hash())
+                # print("previous hash = ", b.prev_hash)
+                # print("current hash = ", block_hash)
+                # print("recalculated hash = ", b.calc_hash())
                 if block_hash.startswith('0' * self.difficulty):
                     if(b.calc_hash() == block_hash):
                         if prev_hash == b.prev_hash:
                             b.hash = block_hash #update the hash
-                            print("======== HASHES IN ORDER =========")
+                            print("======== HASH IN ORDER =========")
                         else:
                             print("prev hash invalid")
                             result = False
@@ -93,6 +93,8 @@ class Blockchain:
                     print("Hash too easy!")
                     result = False
                 prev_hash = block_hash #update the previous hash
+            else:
+                print("======== HASH IN ORDER =========")
         return result
     
     def getDateTime(self):
