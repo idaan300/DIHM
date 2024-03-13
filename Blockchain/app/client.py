@@ -65,8 +65,11 @@ def getValidity():
     address="{0}/valid".format(ADDR)
     resp = requests.get(address)
     if resp.status_code == 200:
-        bool, code = resp
-        return bool
+        code = resp
+        if(code=="Chain in order"):
+            return True
+        else:
+            return False
 
 
 @app.route("/")
