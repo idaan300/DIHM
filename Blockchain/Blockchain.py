@@ -45,10 +45,12 @@ class Blockchain:
         self.save_pending(self.chain)
     
     def mine(self):
+        print("MINING BLOCK")
         if(len(self.pending) > 0): #if there is atleast one pending transaction
             new_block = self.pending.pop()
+            print("BLOCK POPPED")
             new_block.hash = self.proofOfWork(new_block)
-            #hashl = self.p_o_w(new_block)
+            print("HASH == ", new_block.hash)#hashl = self.p_o_w(new_block)
             self.add_block(new_block)
         else:
             return False
