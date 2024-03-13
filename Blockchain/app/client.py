@@ -61,6 +61,9 @@ def get_pending(): #get blockchain
             content.append(block)
         pending_files = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 
+def getValidity():
+    address="{0}/valid".format(ADDR)
+
 @app.route("/")
 def index():
     if not session.get('logged_in'):

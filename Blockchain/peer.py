@@ -6,6 +6,7 @@ from flask import Flask, request
 
 blockchain = Blockchain()
 #peers list
+validity = True
 peers = []
 
 app = Flask(__name__)
@@ -30,15 +31,23 @@ def new_transaction():
 
 @app.route("/chain", methods=["GET"])
 def get_chain():
-    # consensus()
+    global validity
     chain = []
     #create a new chain from our blockchain
     for block in blockchain.chain:
         chain.append(block.to_dict())
     print(chain)
-    blockchain.check_chain_validity(chain)
+    validity = blockchain.check_chain_validity(chain)
     print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
+
+@app.route("/valid", methods=["GET"])
+def getValid():
+    global validity
+    if validity == True:
+        return "Chain In Order"
+    else:
+        return "Problem in Chain"
 
 @app.route("/pending", methods=["GET"])
 def get_pending():

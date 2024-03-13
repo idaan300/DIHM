@@ -84,7 +84,7 @@ class Blockchain:
                             b.hash = block_hash #update the hash
                             print("======== HASH IN ORDER =========")
                         else:
-                            print("prev hash invalid")
+                            print("prev hash invalid") 
                             result = False
                     else:
                         print("Cur and cal hash invalid")
