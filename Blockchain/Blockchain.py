@@ -61,7 +61,6 @@ class Blockchain:
     def check_chain_validity(this, chain):
         result = True
         prev_hash = "0"
-        print(chain)
         #for every block in the chain
         for block in chain:
             b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
@@ -71,6 +70,7 @@ class Blockchain:
             if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
                 b.hash = block_hash #update the hash
                 prev_hash = block_hash #update the previous hash
+                print("======== HASHES IN ORDER =========")
             else:
                 print("BlockChain INVALID")
                 result = False

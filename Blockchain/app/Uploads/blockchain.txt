@@ -2,13 +2,14 @@
     {
         "transactions": {
             "user": "System",
+            "description": "File created by system",
             "v_file": "Genesis",
             "file_data": "0",
             "file_size": 0
         },
-        "timestamp": "2024-03-05T14:01:07.314997",
+        "timestamp": "2024-03-12 13:16:36",
         "prev_hash": "0",
         "nonce": 0,
-        "hash": "e4ebd256bb8100c5a380d9e46b377d9702b3cadf691a33e47eb7471bb03c70e6"
+        "hash": "32d9b888611bc3dbf035f758e27dc521d15a23001f172ecf7a3b49468bba944c"
     }
 ]

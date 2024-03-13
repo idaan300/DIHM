@@ -154,6 +154,8 @@ def submit():
     #determines the size of the file uploaded in bytes 
     file_states = os.stat(files[up_file.filename]).st_size 
     #create a transaction object
+    up_file.stream.seek(0) #start reading at start of file
+    #print("DATA========", up_file.stream.read())
     post_object = {
         "user": user, #user name
         "description": description, #user name
