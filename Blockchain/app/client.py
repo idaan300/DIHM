@@ -67,8 +67,10 @@ def getValidity():
     if resp.status_code == 200:
         code = resp
         if(code=="Chain In Order"):
+            print("Returning True")
             return True
         else:
+            print("Returning False")
             return False
 
 

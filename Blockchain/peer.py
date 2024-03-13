@@ -36,9 +36,8 @@ def get_chain():
     #create a new chain from our blockchain
     for block in blockchain.chain:
         chain.append(block.to_dict())
-    print(chain)
     validity = blockchain.check_chain_validity(chain)
-    print("Chain Len: {0}".format(len(chain)))
+    #print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
 
 @app.route("/valid", methods=["GET"])
@@ -56,8 +55,7 @@ def get_pending():
     #create a new chain from our blockchain
     for block in blockchain.pending:
         chain.append(block.to_dict())
-    print(chain)
-    print("Chain Len: {0}".format(len(chain)))
+    #print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
 
 @app.route("/mine", methods=["GET"])
