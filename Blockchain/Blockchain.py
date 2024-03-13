@@ -6,7 +6,7 @@ class Blockchain:
 
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
-        difficulty = 3
+        difficulty = 4
         #print("loading blockchain from txt")
         start = self.load_blockchain()
         if(start == "null"):
@@ -20,7 +20,6 @@ class Blockchain:
 
     def create_genesis(self): 
         block = Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
-        print("bLOCK CREATED")
         try:
             #print("TESTSSSSS ",json.dumps((block.transactions,block.timestamp, block.prev_hash)))
             bl = block.to_dict()
@@ -33,7 +32,6 @@ class Blockchain:
     def add_block(self,data): #TODO ADD VALIDATION OF BLOCK FIRST
         #prev_block = self.chain[-1]
         new_block = data#Block(data,self.getDateTime(), prev_block.hash)
-        new_block.hash = new_block.calc_hash()
         self.chain.append(new_block)
         self.save_blockchain(self.chain)
     
@@ -45,12 +43,9 @@ class Blockchain:
         self.save_pending(self.chain)
     
     def mine(self):
-        print("MINING BLOCK")
         if(len(self.pending) > 0): #if there is atleast one pending transaction
             new_block = self.pending.pop()
-            print("BLOCK POPPED")
             new_block.hash = self.proofOfWork(new_block)
-            print("HASH == ", new_block.hash)#hashl = self.p_o_w(new_block)
             self.add_block(new_block)
         else:
             return False
@@ -72,7 +67,7 @@ class Blockchain:
         else:
             return False
     
-    def check_chain_validity(this, chain):
+    def check_chain_validity(self, chain):
         result = True
         prev_hash = "0"
         #for every block in the chain
@@ -81,12 +76,16 @@ class Blockchain:
             block_hash = block["hash"] #get the hash of this block and check if its a valid hash
             print("previous hash = ", b.prev_hash)
             print("current hash = ", block_hash)
-            if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
-                b.hash = block_hash #update the hash
-                prev_hash = block_hash #update the previous hash
-                print("======== HASHES IN ORDER =========")
+            if(block_hash.startswith("0" * self.difficulty)):
+                if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
+                    b.hash = block_hash #update the hash
+                    prev_hash = block_hash #update the previous hash
+                    print("======== HASHES IN ORDER =========")
+                else:
+                    print("BlockChain INVALID")
+                    result = False
             else:
-                print("BlockChain INVALID")
+                print("Hash too easy!")
                 result = False
         return result
     
