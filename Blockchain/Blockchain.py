@@ -72,21 +72,22 @@ class Blockchain:
         prev_hash = "0"
         #for every block in the chain
         for block in chain:
-            b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
-            block_hash = block["hash"] #get the hash of this block and check if its a valid hash
-            print("previous hash = ", b.prev_hash)
-            print("current hash = ", block_hash)
-            if block_hash.startswith('0' * self.difficulty) and block["prev_hash"] != "0":
-                if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
-                    b.hash = block_hash #update the hash
-                    prev_hash = block_hash #update the previous hash
-                    print("======== HASHES IN ORDER =========")
+            if block["prev_hash"] != "0":
+                b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
+                block_hash = block["hash"] #get the hash of this block and check if its a valid hash
+                print("previous hash = ", b.prev_hash)
+                print("current hash = ", block_hash)
+                if block_hash.startswith('0' * self.difficulty)
+                    if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
+                        b.hash = block_hash #update the hash
+                        prev_hash = block_hash #update the previous hash
+                        print("======== HASHES IN ORDER =========")
+                    else:
+                        print("BlockChain INVALID")
+                        result = False
                 else:
-                    print("BlockChain INVALID")
+                    print("Hash too easy!")
                     result = False
-            else:
-                print("Hash too easy!")
-                result = False
         return result
     
     def getDateTime(self):
