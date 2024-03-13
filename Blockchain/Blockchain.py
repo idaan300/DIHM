@@ -76,7 +76,7 @@ class Blockchain:
             block_hash = block["hash"] #get the hash of this block and check if its a valid hash
             print("previous hash = ", b.prev_hash)
             print("current hash = ", block_hash)
-            if block_hash.startswith('0' * self.difficulty):
+            if block_hash.startswith('0' * self.difficulty) and block["prev_hash"] != "0":
                 if(b.calc_hash() == block_hash) and prev_hash == b.prev_hash:
                     b.hash = block_hash #update the hash
                     prev_hash = block_hash #update the previous hash
