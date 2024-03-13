@@ -53,13 +53,14 @@ class Blockchain:
         else:
             return False
         
-    def proofOfWork(self, Block b):
-        for nonce in range(1000000):
+    def proofOfWork(self, Block):
+        for nonce in range(100000000000):
             Block.nonce = nonce
             temphash = Block.calc_hash()
             if temphash.startswith('0' * self.difficulty):
                 print("HASHHHHHH FOUND =======", temphash)
                 return temphash
+        print("=========No HASH FOUND=======")
         return -1
 
     def delete(self):
