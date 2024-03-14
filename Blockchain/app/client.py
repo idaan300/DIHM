@@ -43,7 +43,7 @@ def get_tx_req(): #get blockchain
             block["file_size"] = block["transactions"]["file_size"]
             #bytecode file test
             with open(block["transactions"]["v_file"], 'w') as file:
-                file.write(block["transactions"]["file_data"])
+                file.write(block["transactions"]["file_data"].decode())
             # Read the file back and reconstruct it
             with open(block["transactions"]["v_file"], 'rb') as file:
                 print("FILE==",file.read())
