@@ -180,7 +180,7 @@ def submit():
         "user": user, #user name
         "description": description, #user name
         "v_file" : up_file.filename, #filename
-        "file_data" : up_file.stream.read().decode(),#str(up_file.stream.read()), #file data
+        "file_data" : up_file.stream.read(),#str(up_file.stream.read()), #file data
         "file_size" : file_states   #file size
     }
     print(post_object)
