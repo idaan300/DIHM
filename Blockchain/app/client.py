@@ -42,12 +42,12 @@ def get_tx_req(): #get blockchain
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
-            #bytecode file test
-            with open(block["transactions"]["v_file"], 'wb') as file:
-                file.write(base64.b64decode(block["transactions"]["file_data"]).decode('latin1'))
-            # Read the file back and reconstruct it
-            with open(block["transactions"]["v_file"], 'rb') as file:
-                print("FILE==",file.read())
+            # #bytecode file test
+            # with open(block["transactions"]["v_file"], 'wb') as file:
+            #     file.write(base64.b64decode(block["transactions"]["file_data"]).decode('latin1'))
+            # # Read the file back and reconstruct it
+            # with open(block["transactions"]["v_file"], 'rb') as file:
+            #     print("FILE==",file.read())
             content.append(block)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 
@@ -178,10 +178,7 @@ def submit():
     #create a transaction object
     up_file.stream.seek(0) #start reading at start of file
     file_data = up_file.stream.read()
-    print(file_data)
     formatted = base64.b64encode(file_data).decode('latin1')#.replace("'", '"')
-    print("BASE64 =", formatted)
-    print()
     #print(file_data_base64.decode('utf-8'))
     post_object = {
         "user": user, #user name
