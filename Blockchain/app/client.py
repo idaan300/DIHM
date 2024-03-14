@@ -177,15 +177,17 @@ def submit():
     file_states = os.stat(files[up_file.filename]).st_size 
     #create a transaction object
     up_file.stream.seek(0) #start reading at start of file
-    json = up_file.stream.read().decode('utf8').replace("'", '"')
-    print("BASE64 =", json)
+    file_data = up_file.stream.read()
+    print(file_data)
+    formatted = file_data.decode('utf8').replace("'", '"')
+    print("BASE64 =", formatted)
     print()
     #print(file_data_base64.decode('utf-8'))
     post_object = {
         "user": user, #user name
         "description": description, #user name
         "v_file" : up_file.filename, #filename
-        "file_data" : json,#str(up_file.stream.read()), #file data
+        "file_data" : formatted,#str(up_file.stream.read()), #file data
         "file_size" : file_states   #file size
     }
     print(post_object)
