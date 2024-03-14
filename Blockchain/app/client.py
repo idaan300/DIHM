@@ -42,9 +42,8 @@ def get_tx_req(): #get blockchain
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
             #bytecode file test
-            rawString = r'' + block["transactions"]["file_data"]
-            with open(block["transactions"]["v_file"], 'w') as file:
-                file.write(rawString)
+            with open(block["transactions"]["v_file"], 'wb') as file:
+                file.write(block["transactions"]["file_data"].encode())
             # Read the file back and reconstruct it
             with open(block["transactions"]["v_file"], 'rb') as file:
                 print("FILE==",file.read())
@@ -181,7 +180,7 @@ def submit():
         "user": user, #user name
         "description": description, #user name
         "v_file" : up_file.filename, #filename
-        "file_data" : str(up_file.stream.read()), #file data
+        "file_data" : up_file.stream.read().decode(),#str(up_file.stream.read()), #file data
         "file_size" : file_states   #file size
     }
     print(post_object)
