@@ -63,8 +63,8 @@ def get_pending(): #get blockchain
             block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
-            print(base64.b64decode(block["transactions"]["file_data"]))
-            block["file_data"] = base64.b64decode(block["transactions"]["file_data"])
+            print((block["transactions"]["file_data"]))
+            block["file_data"] = (block["transactions"]["file_data"])#base64.b64decode
             block["file_size"] = block["transactions"]["file_size"]
             content.append(block)
         pending_files = content#sorted(content,key=lambda k: k["hash"],reverse=True)
