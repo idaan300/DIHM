@@ -63,6 +63,7 @@ def get_pending(): #get blockchain
             block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
+            print(base64.b64decode(block["transactions"]["file_data"]))
             block["file_data"] = base64.b64decode(block["transactions"]["file_data"])
             block["file_size"] = block["transactions"]["file_size"]
             content.append(block)
@@ -177,6 +178,9 @@ def submit():
     #create a transaction object
     up_file.stream.seek(0) #start reading at start of file
     file_data_base64 = base64.b64encode(up_file.stream.read())
+    print("BASE64 =", file_data_base64)
+    print()
+    print(file_data_base64.decode('utf-8'))
     post_object = {
         "user": user, #user name
         "description": description, #user name
