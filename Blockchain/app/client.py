@@ -63,7 +63,7 @@ def getValidity():
     address="{0}/valid".format(ADDR)
     resp = requests.get(address)
     if resp.status_code == 200:
-        code = resp
+        code = resp.content.decode()
         print("RECEIVED CODE = ", code)
         if(code=="Chain In Order"):
             print("Returning True")
