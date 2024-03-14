@@ -6,7 +6,7 @@ class Blockchain:
 
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
-        self.difficulty = 4
+        self.difficulty = 1
         #print("loading blockchain from txt")
         start = self.load_blockchain()
         if(start == "null"):
@@ -51,7 +51,7 @@ class Blockchain:
             return False
         
     def proofOfWork(self, Block):
-        for nonce in range(100000000000):
+        for nonce in range(100000000):
             Block.nonce = nonce
             temphash = Block.calc_hash()
             if temphash.startswith('0' * self.difficulty):
