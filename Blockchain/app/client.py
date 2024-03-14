@@ -7,6 +7,7 @@ from user import User
 from flask import Flask, render_template, redirect, request,send_file,session
 from werkzeug.utils import secure_filename
 from app import app
+import base64
 from timeit import default_timer as timer
 
 ADDR = "http://127.0.0.1:80"
@@ -39,7 +40,7 @@ def get_tx_req(): #get blockchain
             block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
-            block["file_data"] = block["transactions"]["file_data"]
+            block["file_data"] = base64.b64decode(block["transactions"]["file_data"])
             block["file_size"] = block["transactions"]["file_size"]
             #bytecode file test
             with open(block["transactions"]["v_file"], 'wb') as file:
@@ -62,7 +63,7 @@ def get_pending(): #get blockchain
             block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
-            block["file_data"] = block["transactions"]["file_data"]
+            block["file_data"] = base64.b64decode(block["transactions"]["file_data"])
             block["file_size"] = block["transactions"]["file_size"]
             content.append(block)
         pending_files = content#sorted(content,key=lambda k: k["hash"],reverse=True)
@@ -180,7 +181,7 @@ def submit():
         "user": user, #user name
         "description": description, #user name
         "v_file" : up_file.filename, #filename
-        "file_data" : up_file.stream.read(),#str(up_file.stream.read()), #file data
+        "file_data" : base64.b64encode(up_file.stream.read()).decode('utf-8'),#str(up_file.stream.read()), #file data
         "file_size" : file_states   #file size
     }
     print(post_object)
