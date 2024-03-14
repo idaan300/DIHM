@@ -179,11 +179,7 @@ def submit():
     up_file.stream.seek(0) #start reading at start of file
     file_data = up_file.stream.read()
     print(file_data)
-    try:
-        formatted = file_data.decode('utf16').replace("'", '"')
-    except:
-        formatted = file_data
-
+    formatted = base64.b64encode(file_data.decode('latin1'))#.replace("'", '"')
     print("BASE64 =", formatted)
     print()
     #print(file_data_base64.decode('utf-8'))
