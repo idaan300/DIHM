@@ -74,11 +74,11 @@
   }
 
   .post_box--valid {
-    background: green;
+    background: rgb(78, 236, 159);
   }
 
   .post_box--invalid {
-    background: red;
+    background: rgb(255, 52, 52);
   }
 
   .post_box-header {
@@ -203,7 +203,12 @@
     </div>
 
     <div class="col-sm-4">
-      <h2 class="text-center alert alert-primary">Uploaded Files</h2>
+      <h2 class="text-center alert alert-primary">{% if validity %}
+        Uploaded Files
+      {% else %}
+        Uploaded Files (Issue In Blockchain)
+      {% endif %} 
+      </h2>
       {% for post in request_tx %}
       <div class="post_box{% if validity %} post_box--valid{% else %} post_box--invalid{% endif %}">
         <div class="post_box-header">
