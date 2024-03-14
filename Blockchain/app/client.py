@@ -40,7 +40,7 @@ def get_tx_req(): #get blockchain
             block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
-            block["file_data"] = base64.b64decode(block["transactions"]["file_data"])
+            block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
             #bytecode file test
             with open(block["transactions"]["v_file"], 'wb') as file:
