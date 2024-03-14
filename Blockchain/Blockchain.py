@@ -19,7 +19,7 @@ class Blockchain:
             self.chain = start
 
     def create_genesis(self): 
-        block = Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "0", 'file_size': 0},self.getDateTime(), "0")
+        block = Block({'user': 'System', 'description': 'File created by system', 'v_file': 'Genesis', 'file_data': "b'DIHM-Digital Inventory of Hazardous Materials'", 'file_size': 0},self.getDateTime(), "0")
         try:
             #print("TESTSSSSS ",json.dumps((block.transactions,block.timestamp, block.prev_hash)))
             bl = block.to_dict()
