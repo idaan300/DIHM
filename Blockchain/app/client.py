@@ -41,8 +41,16 @@ def get_tx_req(): #get blockchain
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
+            #bytecode file test
+            with open(block["transactions"]["v_file"], 'wb') as file:
+                file.write(block["transactions"]["file_data"])
+            # Read the file back and reconstruct it
+            with open(block["transactions"]["v_file"], 'rb') as file:
+                print("FILE==",file.read())
             content.append(block)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
+
+
 def get_pending(): #get blockchain
     global pending_files
     chain_addr = "{0}/pending".format(ADDR)
@@ -58,6 +66,7 @@ def get_pending(): #get blockchain
             block["file_size"] = block["transactions"]["file_size"]
             content.append(block)
         pending_files = content#sorted(content,key=lambda k: k["hash"],reverse=True)
+        # Write the bytecode to a file
 
 def getValidity():
     address="{0}/valid".format(ADDR)
