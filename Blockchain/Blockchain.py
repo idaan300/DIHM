@@ -172,18 +172,19 @@ class Blockchain:
             return "null"  # or return a new blockchain with just the genesis block
         
     def encrypt_data(self, data):
-        encrypted_data = {}
-        for key, value in data.items():
-            encrypted_value = self.cipher_suite.encrypt(str(value).encode()).decode()
-            encrypted_data[key] = encrypted_value
-        return encrypted_data
+        encrypted_data_list = []
+        for item in data:
+            encrypted_item = self.cipher_suite.encrypt(str(item).encode()).decode()
+            encrypted_data_list.append(encrypted_item)
+        return encrypted_data_list
 
     def decrypt_data(self, encrypted_data):
-        decrypted_data = {}
-        for key, value in encrypted_data.items():
-            decrypted_value = self.cipher_suite.decrypt(value.encode()).decode()
-            decrypted_data[key] = decrypted_value
-        return decrypted_data   
+        decrypted_data_list = []
+        for item in encrypted_data:
+            decrypted_item = self.cipher_suite.decrypt(item.encode()).decode()
+            decrypted_data_list.append(decrypted_item)
+        return decrypted_data_list
+    
 
 
 #blockchain = Blockchain()
