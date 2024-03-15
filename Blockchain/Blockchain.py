@@ -171,18 +171,19 @@ class Blockchain:
             print("No existing blockchain found or error in parsing. Starting a new blockchain.")
             return "null"  # or return a new blockchain with just the genesis block
         
-    def encrypt_data(self, data_list):
-        encrypted_data_list = []
-        for data in data_list:
-            encrypted_data_list.append(self.cipher_suite.encrypt(data.encode()).decode())
-        return encrypted_data_list
+    def encrypt_data(self, data):
+        encrypted_data = {}
+        for key, value in data.items():
+            encrypted_value = self.cipher_suite.encrypt(str(value).encode()).decode()
+            encrypted_data[key] = encrypted_value
+        return encrypted_data
 
-    # Function to decrypt data
-    def decrypt_data(self, encrypted_data_list):
-        decrypted_data_list = []
-        for encrypted_data in encrypted_data_list:
-            decrypted_data_list.append(self.cipher_suite.decrypt(encrypted_data.encode()).decode())
-        return decrypted_data_list    
+    def decrypt_data(self, encrypted_data):
+        decrypted_data = {}
+        for key, value in encrypted_data.items():
+            decrypted_value = self.cipher_suite.decrypt(value.encode()).decode()
+            decrypted_data[key] = decrypted_value
+        return decrypted_data   
 
 
 #blockchain = Blockchain()
