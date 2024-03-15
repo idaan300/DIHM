@@ -72,7 +72,7 @@ class Blockchain:
     def check_chain_validity(self, chain):
         result = True
         prev_hash = "0"
-        UPLOAD_FOLDER = "app/Uploads"
+        UPLOAD_FOLDER = "app/Uploads/"
         #for every block in the chain
         for block in chain:
             if block["prev_hash"] != "0":
