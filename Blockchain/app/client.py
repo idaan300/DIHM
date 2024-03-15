@@ -43,7 +43,12 @@ def get_tx_req(): #get blockchain
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
             # #bytecode file test
-            decoded_data = base64.b64decode(block["transactions"]["file_data"])
+            data = block["file_data"]
+            print("daTA=", data)
+            if(data == 0):
+                decoded_data = b'hallo'
+            else:
+                decoded_data = base64.b64decode(block["file_data"])
             with open(block["transactions"]["v_file"], 'wb') as file:
                 file.write(decoded_data)
             # # Read the file back and reconstruct it
