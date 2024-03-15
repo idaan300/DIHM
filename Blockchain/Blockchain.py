@@ -71,6 +71,7 @@ class Blockchain:
     
     def check_chain_validity(self, chain):
         result = True
+        er_block = ""
         prev_hash = "0"
         UPLOAD_FOLDER = "app/Uploads/"
         #for every block in the chain
@@ -103,10 +104,13 @@ class Blockchain:
                     print("Hash too easy!")
                     result = False
                 prev_hash = block_hash #update the previous hash
+                if(result == False):
+                    er_block = block["transactions"]["v_file"]
             else:
                 print("======== HASH IN ORDER =========")
                 prev_hash = block["hash"]
         print("result:",result)
+        print("error block? ", er_block)
         return result
     
     def getDateTime(self):
