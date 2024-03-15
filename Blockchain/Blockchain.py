@@ -181,9 +181,13 @@ class Blockchain:
     def decrypt_data(self, encrypted_data):
         decrypted_data_list = []
         for item in encrypted_data:
-            decrypted_item = self.cipher_suite.decrypt(item.encode()).decode()
-            decrypted_data_list.append(decrypted_item)
+            if isinstance(item, str):
+                decrypted_item = self.cipher_suite.decrypt(item.encode()).decode()
+                decrypted_data_list.append(decrypted_item)
+            else:
+                decrypted_data_list.append(item)  # Append non-string items as is
         return decrypted_data_list
+
     
 
 
