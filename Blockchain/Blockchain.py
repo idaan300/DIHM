@@ -1,6 +1,8 @@
 import datetime
 from Block import Block
 import json
+import base64
+import os
 
 class Blockchain:
 
@@ -70,14 +72,24 @@ class Blockchain:
     def check_chain_validity(self, chain):
         result = True
         prev_hash = "0"
+        UPLOAD_FOLDER = "app/Uploads"
         #for every block in the chain
         for block in chain:
             if block["prev_hash"] != "0":
                 b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
                 block_hash = block["hash"] #get the hash of this block and check if its a valid hash
-                #print("previous hash = ", b.prev_hash)
-                # print("current hash = ", block_hash)
-                # print("recalculated hash = ", b.calc_hash())
+                decoded_data = base64.b64decode(block["file_data"])
+                
+                with open(UPLOAD_FOLDER + block["transactions"]["v_file"], 'rb') as file:
+                    file_data = file.read()
+
+                print(file_data)
+                print("============================================")
+                print(decoded_data)
+                print("============================================")
+                if(file_data == decoded_data):
+                    print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+
                 if block_hash.startswith('0' * self.difficulty):
                     if(b.calc_hash() == block_hash):
                         if prev_hash == b.prev_hash:
