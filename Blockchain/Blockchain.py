@@ -78,7 +78,7 @@ class Blockchain:
             if block["prev_hash"] != "0":
                 b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
                 block_hash = block["hash"] #get the hash of this block and check if its a valid hash
-                decoded_data = base64.b64decode(block["file_data"])
+                decoded_data = base64.b64decode(block["transactions"]["file_data"])
                 
                 with open(UPLOAD_FOLDER + block["transactions"]["v_file"], 'rb') as file:
                     file_data = file.read()
