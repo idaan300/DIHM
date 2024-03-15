@@ -3,8 +3,14 @@ from Block import Block
 import json
 import base64
 import os
+from cryptography.fernet import Fernet
 
 class Blockchain:
+    with open('secret1.key', 'rb') as key_file:
+        print("fernet key found")
+        key = key_file.read()
+        print("key=", key)
+    cipher_suite = Fernet(key)
 
     def __init__(self):
         self.pending = [] # pending list of data that needs to go on chain.
@@ -128,6 +134,7 @@ class Blockchain:
     def save_blockchain(self, blockchain):
         with open('blockchain.txt', 'w') as file:
             chain = self.serializeBlockchain(blockchain)
+            chain = self.encrypt_data(chain)
             json.dump(chain, file, indent=4)
 
     def load_blockchain(self):
@@ -135,6 +142,7 @@ class Blockchain:
             with open('blockchain.txt', 'r') as file:
                 chain = []
                 dict = json.load(file)
+                dict = self.decrypt_data(dict)
                 for block in dict:
                     #print("entry:",block)
                     b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
@@ -162,6 +170,14 @@ class Blockchain:
         except (FileNotFoundError, json.JSONDecodeError):
             print("No existing blockchain found or error in parsing. Starting a new blockchain.")
             return "null"  # or return a new blockchain with just the genesis block
+        
+    def encrypt_data(self, data):
+        return self.cipher_suite.encrypt(data.encode()).decode()
+
+    # Function to decrypt data
+    def decrypt_data(self,data):
+        return self.cipher_suite.decrypt(data.encode()).decode()        
+
 
 #blockchain = Blockchain()
 #blockchain.check_chain_validity(blockchain.chain)
