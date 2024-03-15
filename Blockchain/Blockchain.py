@@ -82,13 +82,11 @@ class Blockchain:
                 
                 with open(UPLOAD_FOLDER + block["transactions"]["v_file"], 'rb') as file:
                     file_data = file.read()
-
-                print(file_data)
-                print("============================================")
-                print(decoded_data)
-                print("============================================")
                 if(file_data == decoded_data):
-                    print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+                    print("File integrity in order")
+                else:
+                    print("File intergrity invalid")
+                    result = False
 
                 if block_hash.startswith('0' * self.difficulty):
                     if(b.calc_hash() == block_hash):
@@ -134,7 +132,7 @@ class Blockchain:
                 chain = []
                 dict = json.load(file)
                 for block in dict:
-                    print("entry:",block)
+                    #print("entry:",block)
                     b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
                     chain.append(b)
                 return chain
@@ -152,7 +150,7 @@ class Blockchain:
             with open('pending.txt', 'r') as file:
                 chain = []
                 dict = json.load(file)
-                print("dict: ",dict)
+                #print("dict: ",dict)
                 for block in dict:
                     b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
                     chain.append(b)
