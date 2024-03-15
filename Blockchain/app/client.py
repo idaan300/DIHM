@@ -45,7 +45,7 @@ def get_tx_req(): #get blockchain
             # #bytecode file test
             data = block["file_data"]
             print("daTA=", data)
-            if(data == 0):
+            if(data == "0"):
                 decoded_data = b'hallo'
             else:
                 decoded_data = base64.b64decode(block["file_data"])
