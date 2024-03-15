@@ -43,8 +43,9 @@ def get_tx_req(): #get blockchain
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
             # #bytecode file test
-            # with open(block["transactions"]["v_file"], 'wb') as file:
-            #     file.write(base64.b64decode(block["transactions"]["file_data"]).decode('latin1'))
+            decoded_data = base64.b64decode(block["transactions"]["file_data"])
+            with open(block["transactions"]["v_file"], 'wb') as file:
+                file.write(decoded_data)
             # # Read the file back and reconstruct it
             # with open(block["transactions"]["v_file"], 'rb') as file:
             #     print("FILE==",file.read())
@@ -178,8 +179,8 @@ def submit():
     #create a transaction object
     up_file.stream.seek(0) #start reading at start of file
     file_data = up_file.stream.read()
-    formatted = base64.b64encode(file_data).decode('latin1')#.replace("'", '"')
-    #print(file_data_base64.decode('utf-8'))
+    file_b64 = base64.b64encode(file_data)#.decode('latin1')#.replace("'", '"')
+    formatted = (file_b64.decode('utf-8'))
     post_object = {
         "user": user, #user name
         "description": description, #user name
