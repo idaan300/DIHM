@@ -134,7 +134,7 @@ class Blockchain:
     def save_blockchain(self, blockchain):
         with open('blockchain.txt', 'w') as file:
             chain = self.serializeBlockchain(blockchain)
-            chain = self.encrypt_data(chain)
+            #chain = self.encrypt_data(chain)
             json.dump(chain, file, indent=4)
 
     def load_blockchain(self):
@@ -142,7 +142,7 @@ class Blockchain:
             with open('blockchain.txt', 'r') as file:
                 chain = []
                 dict = json.load(file)
-                dict = self.decrypt_data(dict)
+                #dict = self.decrypt_data(dict)
                 for block in dict:
                     #print("entry:",block)
                     b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0),hash=block.get('hash',''))
