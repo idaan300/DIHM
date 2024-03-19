@@ -197,6 +197,7 @@ def submit():
     up_file.save(os.path.join("app/Uploads/",secure_filename(up_file.filename)))
     #add the file to the list to create a download link
     files[up_file.filename] = os.path.join(app.root_path, "Uploads", up_file.filename)
+    print(files[up_file.filename])
     #determines the size of the file uploaded in bytes 
     file_states = os.stat(files[up_file.filename]).st_size 
     #create a transaction object
