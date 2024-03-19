@@ -97,7 +97,10 @@ def index():
         return redirect("/login")  # Redirect to login if not logged in
     get_pending()
     get_tx_req()
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
+    global accounts
+    accounts = admin.getAccNames()
+    print("accounts =", accounts)
+    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity(), accounts=accounts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
