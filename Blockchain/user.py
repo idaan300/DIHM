@@ -34,6 +34,14 @@ class User:
         new_user = {"username": name, "password": password, "user_type": type}
         self.list.append(new_user)
         self.save(self.list)
+    
+    def deleteAccount(self, name):
+        for d in self.list:
+            print(d)
+            if d['username'] == name:
+                d = {"username": "deleted_user", "password": "deluser", "user_type": "view"}
+                self.save(self.list)
+                print(self.list)
 
     def changePass(self, name, new_password):
         list = []

@@ -166,6 +166,17 @@ def change_password():
         return redirect("/")
     return render_template('change_password.html')
 
+@app.route('/delete_account', methods=['GET', 'POST'])
+def delete_account():
+    if request.method == 'POST':
+        # Handle the login logic here
+        if not session.get('name'):
+            return redirect("/login")
+        del_user = request.form['del_user']
+        admin.changePass(del_user)
+        return redirect("/")
+    return render_template('delete_account.html')
+
 
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
