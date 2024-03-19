@@ -19,15 +19,14 @@ pending_files = []
 #store filename
 files = {}
 admin = User()
-#destiantion for upload files
+#destination for upload files
+app = Flask(__name__)
+app.secret_key = '7avQ3nV'  # Set a secret key for security purposes
 UPLOAD_FOLDER = "app/Uploads"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #peers list
 peers = []
-
-app = Flask(__name__)
-app.secret_key = '7avQ3nV'  # Set a secret key for security purposes
 
 def get_tx_req(): #get blockchain
     global request_tx
