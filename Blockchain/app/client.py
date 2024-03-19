@@ -214,7 +214,7 @@ def download_file(variable):
     # return send_file(p,as_attachment=True)
     print("var = ", variable)
     print("folder =", UPLOAD_FOLDER + variable)
-    return send_file(send_from_directory(UPLOAD_FOLDER, variable, as_attachment=True))
-    #return send_from_directory(UPLOAD_FOLDER, variable, as_attachment=True)
+    #return send_file("/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/README.md")
+    return send_from_directory(app.config['UPLOAD_FOLDER'], variable, as_attachment=True)
 
 app.run(host="0.0.0.0", port=8000,ssl_context=('app/cert.pem', 'app/key.pem'))
