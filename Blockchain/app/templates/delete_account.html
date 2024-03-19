@@ -9,15 +9,16 @@
 <body>
     <h1>Delete Account</h1>
     <form action="/delete_account" method="POST">
-        <label for="account">Select an account to delete:</label>
-        <select id="account" name="account">
-            <!-- Loop through the list of accounts -->
-            <!-- Replace 'accounts' with the actual list of accounts from admin.list -->
-            {% for account in accounts %}
-                <option value="{{ account }}">{{ account }}</option>
-            {% endfor %}
-        </select>
-        <br>
+        <div>
+            <label for="account">Select an account to delete:</label>
+            <select id="account" name="account">
+                <!-- Loop through the list of accounts -->
+                <!-- Replace 'accounts' with the actual list of accounts from admin.list -->
+                {% for account in accounts %}
+                    <option value="{{ account }}">{{ account }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <button type="submit">Delete Account</button>
     </form>
 </body>
