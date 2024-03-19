@@ -36,12 +36,15 @@ class User:
         self.save(self.list)
     
     def deleteAccount(self, name):
+        index = 0
         for d in self.list:
             print(d)
             if d['username'] == name:
-                d = {"username": "deleted_user", "password": "deluser", "user_type": "view"}
+                self.list.pop(index)
+                # d = {"username": "deleted_user", "password": "deluser", "user_type": "view"}
                 self.save(self.list)
                 print(self.list)
+            index=index+1
     
     def getAccNames(self):
         users = []

@@ -180,7 +180,7 @@ def delete_account():
         print(request.form['account'])
         del_user = request.form['account']
         print("change pass")
-        admin.changePass(del_user)
+        admin.delete_account(del_user)
         return redirect("/")
     return render_template('delete_account.html', accounts=accounts)
 
