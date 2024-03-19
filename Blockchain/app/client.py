@@ -19,6 +19,7 @@ pending_files = []
 #store filename
 files = {}
 admin = User()
+accounts = []
 #destiantion for upload files
 UPLOAD_FOLDER = "app/Uploads"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

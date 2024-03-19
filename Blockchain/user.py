@@ -42,6 +42,13 @@ class User:
                 d = {"username": "deleted_user", "password": "deluser", "user_type": "view"}
                 self.save(self.list)
                 print(self.list)
+    
+    def getAccNames(self):
+        users = []
+        for d in self.list:
+            name = d['username']
+            users.append(name)
+        return users
 
     def changePass(self, name, new_password):
         list = []

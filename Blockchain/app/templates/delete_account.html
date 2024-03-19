@@ -13,7 +13,7 @@
         <select id="account" name="account">
             <!-- Loop through the list of accounts -->
             <!-- Replace 'accounts' with the actual list of accounts from admin.list -->
-            {% for account in admin.list %}
+            {% for account in accounts %}
                 <option value="{{ account }}">{{ account }}</option>
             {% endfor %}
         </select>
