@@ -168,14 +168,18 @@ def change_password():
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
+    print("function called")
     accounts = admin.getAccNames()
-    print("accounts =", accounts)
+    print("ACCOUNDS REC")
     if request.method == 'POST':
+        print("post method")
         # Handle the login logic here
         if not session.get('name'):
             return redirect("/login")
-        print(request.form['del_user'])
-        del_user = request.form['del_user']
+        print("requesting form")
+        print(request.form['account'])
+        del_user = request.form['account']
+        print("change pass")
         admin.changePass(del_user)
         return redirect("/")
     return render_template('delete_account.html', accounts=accounts)
