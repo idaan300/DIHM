@@ -22,7 +22,7 @@ admin = User()
 #destination for upload files
 app = Flask(__name__)
 app.secret_key = '7avQ3nV'  # Set a secret key for security purposes
-UPLOAD_FOLDER = "app/Uploads"
+UPLOAD_FOLDER = "/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #peers list
