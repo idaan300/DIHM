@@ -4,7 +4,7 @@ import os
 import requests
 import socket
 from user import User
-from flask import Flask, render_template, redirect, request,send_from_directory,session#send_file
+from flask import Flask, render_template, redirect, request,send_from_directory,session,send_file
 from werkzeug.utils import secure_filename
 from app import app
 import base64
@@ -42,18 +42,6 @@ def get_tx_req(): #get blockchain
             block["v_file"] = block["transactions"]["v_file"]
             block["file_data"] = block["transactions"]["file_data"]
             block["file_size"] = block["transactions"]["file_size"]
-            # #bytecode file test
-            data = block["file_data"]
-            print("daTA=", data)
-            if(data == "0"):
-                decoded_data = b'hallo'
-            else:
-                decoded_data = base64.b64decode(block["file_data"])
-            with open(block["transactions"]["v_file"], 'wb') as file:
-                file.write(decoded_data)
-            # # Read the file back and reconstruct it
-            # with open(block["transactions"]["v_file"], 'rb') as file:
-            #     print("FILE==",file.read())
             content.append(block)
         request_tx = content#sorted(content,key=lambda k: k["hash"],reverse=True)
 
@@ -69,7 +57,7 @@ def get_pending(): #get blockchain
             block["user"] = block["transactions"]["user"]
             block["description"] = block["transactions"]["description"]
             block["v_file"] = block["transactions"]["v_file"]
-            print((block["transactions"]["file_data"]))
+            #print((block["transactions"]["file_data"]))
             block["file_data"] = (block["transactions"]["file_data"])#base64.b64decode
             block["file_size"] = block["transactions"]["file_size"]
             content.append(block)
@@ -106,11 +94,11 @@ def login():
         password = request.form['password']
         
         db = admin.load()
-        print(db)
+        #print(db)
         # Verify username and password here
         # For example, check against user data in the database
         for entry in db:
-            print("Entry --- > ", entry)
+            #print("Entry --- > ", entry)
             if username == entry["username"] and password == entry["password"]:
                 session['logged_in'] = True
                 session['name'] = entry["username"]
@@ -226,6 +214,7 @@ def download_file(variable):
     # return send_file(p,as_attachment=True)
     print("var = ", variable)
     print("folder =", UPLOAD_FOLDER + variable)
-    return send_from_directory(UPLOAD_FOLDER, variable, as_attachment=True)
+    return send_file(send_from_directory(UPLOAD_FOLDER, variable, as_attachment=True))
+    #return send_from_directory(UPLOAD_FOLDER, variable, as_attachment=True)
 
 app.run(host="0.0.0.0", port=8000,ssl_context=('app/cert.pem', 'app/key.pem'))
