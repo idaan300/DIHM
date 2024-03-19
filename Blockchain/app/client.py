@@ -174,6 +174,7 @@ def delete_account():
         # Handle the login logic here
         if not session.get('name'):
             return redirect("/login")
+        print(request.form['del_user'])
         del_user = request.form['del_user']
         admin.changePass(del_user)
         return redirect("/")
