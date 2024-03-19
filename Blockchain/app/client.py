@@ -19,7 +19,6 @@ pending_files = []
 #store filename
 files = {}
 admin = User()
-accounts = []
 #destiantion for upload files
 UPLOAD_FOLDER = "app/Uploads"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -97,10 +96,7 @@ def index():
         return redirect("/login")  # Redirect to login if not logged in
     get_pending()
     get_tx_req()
-    global accounts
-    accounts = admin.getAccNames()
-    print("accounts =", accounts)
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity(), accounts=accounts)
+    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -172,6 +168,8 @@ def change_password():
 
 @app.route('/delete_account', methods=['GET', 'POST'])
 def delete_account():
+    accounts = admin.getAccNames()
+    print("accounts =", accounts)
     if request.method == 'POST':
         # Handle the login logic here
         if not session.get('name'):
@@ -179,7 +177,7 @@ def delete_account():
         del_user = request.form['del_user']
         admin.changePass(del_user)
         return redirect("/")
-    return render_template('delete_account.html')
+    return render_template('delete_account.html', accounts=accounts)
 
 
 @app.route("/submit", methods=["POST"])

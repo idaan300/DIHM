@@ -46,6 +46,8 @@ class User:
     def getAccNames(self):
         users = []
         for d in self.list:
+            print("List=", self.list)
+            print(d)
             name = d['username']
             users.append(name)
         return users
