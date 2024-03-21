@@ -14,9 +14,11 @@
             <select id="account" name="account">
                 <!-- Loop through the list of accounts -->
                 <!-- Replace 'accounts' with the actual list of accounts from admin.list -->
-                {% if account != "ViewOnly" %}
-                    <option value="{{ account }}">{{ account }}</option>
-                {% endif %}
+                {% for account in accounts %}
+                    {% if account != "ViewOnly" %}
+                        <option value="{{ account }}">{{ account }}</option>
+                    {% endif %}
+                {% endfor %}
             </select>
         </div>
         <button type="submit">Delete Account</button>
