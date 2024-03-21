@@ -5,6 +5,7 @@ import os
 class User:
     # Example user data
     user1 = {"username": "Joris", "password": "unknown", "user_type": "admin"}
+    user2 = {"username": "ViewOnly", "password": "viewonly", "user_type": "view"}
     
     with open('secret.key', 'rb') as key_file:
         print("fernet key found")
@@ -25,6 +26,7 @@ class User:
         if(start == "null"):
             self.list = []
             self.list.append(self.user1)
+            self.list.append(self.user2)
             #self.addAccount("stakeholder", "stakeholder", "view")
             self.save(self.list)
         else:
