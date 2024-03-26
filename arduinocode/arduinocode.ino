@@ -4,6 +4,7 @@
  * 1. Upload node data to the server using the standard LoRaWAN protocol.
  *  
  * Description:
+ * .
  * 1. Communicate using LoRaWAN protocol.
  * 
  * HelTec AutoMation, Chengdu, China
