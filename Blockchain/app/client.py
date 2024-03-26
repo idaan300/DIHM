@@ -81,6 +81,7 @@ def getValidity():
 def index():
     if not session.get('logged_in'):
         return redirect("/login")  # Redirect to login if not logged in
+    session['type'] = "admin"
     get_pending()
     get_tx_req()
     return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
@@ -131,23 +132,28 @@ def uploader():
 def consensus():
     if not session.get('logged_in'):
         return redirect("/login")
+    session['type'] = "consensus"
     get_tx_req()
     get_pending()
     return render_template('consensus.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
 
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():
-    current_url = request.base_url
     link = "{0}/mine".format(ADDR)
     resp = requests.get(link)
-    return redirect(current_url)
+    if(session['type'] == "consensus"):
+        return redirect("/consensus")
+    else:
+        return redirect("/")
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
-    current_url = request.base_url
     link = "{0}/delete".format(ADDR)
     resp = requests.get(link)
-    return redirect(current_url)
+    if(session['type'] == "consensus"):
+        return redirect("/consensus")
+    else:
+        return redirect("/")
 
 @app.route('/account', methods=['GET','POST'])
 def create_account():
