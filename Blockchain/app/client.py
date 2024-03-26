@@ -105,6 +105,10 @@ def login():
                     return redirect("/")  # Redirect to another page, e.g., home
                 if(entry["user_type"] == "view"):
                     return redirect("/view")
+                if(entry["user_type"] == "upload"):
+                    return redirect("/upload")
+                if(entry["user_type"] == "consensus"):
+                    return redirect("/consensus")
         return "Login Failed"
     # GET request - show the login form
     return render_template('login.html')
@@ -114,7 +118,22 @@ def viewOnly():
     if not session.get('logged_in'):
         return redirect("/login")
     get_tx_req()
-    return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx)
+    return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, validity=getValidity())
+
+@app.route('/upload', methods=['GET', 'POST'])
+def viewOnly():
+    if not session.get('logged_in'):
+        return redirect("/login")
+    get_pending()
+    return render_template('upload.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,pending_files=pending_files)
+
+@app.route('/consensus', methods=['GET', 'POST'])
+def viewOnly():
+    if not session.get('logged_in'):
+        return redirect("/login")
+    get_tx_req()
+    get_pending()
+    return render_template('consensus.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
 
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():

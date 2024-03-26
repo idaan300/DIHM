@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base_view.html" %} {% block content %}
 <style type="text/css">
   .navbar-item:hover {
     background-color: #b9293c;
@@ -60,15 +60,25 @@
   .request_tx {
     margin: 2.5rem 2.5rem 14rem 2.5rem;
   }
+  .pending_files {
+    margin: 2.5rem 2.5rem 14rem 2.5rem;
+  }
  
-  
   /* Post boxes styling */
   .post_box {
-    background: rgb(131, 251, 245);
+    /* background: rgb(131, 251, 245);*/
     padding: 1.2rem 0 0 1.2rem;
     margin-top: 0;
     margin-bottom: 0.8rem;
     border: 0.1rem solid #7f8c8d;
+  }
+
+  .post_box--valid {
+    background: rgb(78, 236, 159);
+  }
+
+  .post_box--invalid {
+    background: rgb(255, 52, 52);
   }
 
   .post_box-header {
@@ -129,36 +139,54 @@
 </style>
 <div class="container-fluid">
   <div class="row" style="padding-top: 10px">
-    <div class="col-sm-4" style="">
-      <h2 class="text-center alert alert-primary">Upload a File</h2>
-      <form action="/submit" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <label>User Name:</label>
-          <input
-            type="text"
-            class="form-control"
-            name="user"
-            placeholder="Enter Your Full Name"
-          />
+    <div class="col-sm-4">
+      <h2 class="text-center alert alert-primary">Pending Files</h2>
+      <!-- Loop through pending files -->
+      {% for pending_file in pending_files %}
+      <div class="post_box">
+        <div class="post_box-header">
+          <div
+            style="
+              background: rgb(219, 52, 52) none repeat scroll 0% 0%;
+              box-shadow: rgb(0, 4, 6) 0 0 0 0.2rem;
+            "
+            class="post_box-avatar"
+          >
+            {{pending_file.user[0]}}
+          </div>
+          <div class="name-header">{{ pending_file.user }}</div>
         </div>
-
-        <div class="form-group">
-          <label for="exampleFormControlTextarea1">Upload a File:</label>
-          <input
-            type="file"
-            id="fileUpld"
-            name="v_file"
-            accept=".*"
-          />
+        <div>
+          <div class="post_box-body">
+            <p>
+              {{ pending_file.v_file }} ({{ pending_file.timestamp }}) &#x2192;
+              <a href="{{url_for('download_file',variable = pending_file.v_file)}}"
+                >Download</a> <br>
+                {{ pending_file.description }} <br>
+              <form action="{{ url_for('approve') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
+                <button type="submit" class="btn btn-success">Approve</button>
+              </form>
+              <form action="{{ url_for('delete') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
+                <button type="submit" class="btn btn-danger">Disapprove</button>
+              </form>
+            </p>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary mb-2">Upload</button>
-      </form>
+      </div>
+      {% endfor %}
     </div>
 
-    <div class="col-sm-7">
-      <h2 class="text-center alert alert-primary">Uploaded Files</h2>
+    <div class="col-sm-4">
+      <h2 class="text-center alert alert-primary">{% if validity %}
+        Uploaded Files
+      {% else %}
+        Uploaded Files (Issue In Blockchain)
+      {% endif %} 
+      </h2>
       {% for post in request_tx %}
-      <div class="post_box">
+      <div class="post_box{% if validity %} post_box--valid{% else %} post_box--invalid{% endif %}">
         <div class="post_box-header">
           <div
             style="
@@ -176,8 +204,8 @@
             <p>
               {{ post.v_file }} ({{ post.timestamp }}) &#x2192;
               <a href="{{url_for('download_file',variable = post.v_file)}}"
-                >Download</a
-              >
+                >Download</a> <br>
+                {{ post.description }} <br>
             </p>
           </div>
         </div>

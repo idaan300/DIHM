@@ -129,15 +129,36 @@
 </style>
 <div class="container-fluid">
   <div class="row" style="padding-top: 10px">
+    <div class="col-sm-4" style="">
+      <h2 class="text-center alert alert-primary">Upload a File</h2>
+      <form action="/submit" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label>User Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="user"
+            placeholder="Enter Your Full Name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Upload a File:</label>
+          <input
+            type="file"
+            id="fileUpld"
+            name="v_file"
+            accept=".*"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Upload</button>
+      </form>
+    </div>
     <div class="col-sm-4">
-      <h2 class="text-center alert alert-primary">{% if validity %}
-        Uploaded Files
-      {% else %}
-        Uploaded Files (Issue In Blockchain)
-      {% endif %} 
-      </h2>
-      {% for post in request_tx %}
-      <div class="post_box{% if validity %} post_box--valid{% else %} post_box--invalid{% endif %}">
+      <h2 class="text-center alert alert-primary">Pending Files</h2>
+      <!-- Loop through pending files -->
+      {% for pending_file in pending_files %}
+      <div class="post_box">
         <div class="post_box-header">
           <div
             style="
@@ -146,23 +167,32 @@
             "
             class="post_box-avatar"
           >
-            {{post.user[0]}}
+            {{pending_file.user[0]}}
           </div>
-          <div class="name-header">{{post.user}}</div>
+          <div class="name-header">{{ pending_file.user }}</div>
         </div>
         <div>
           <div class="post_box-body">
             <p>
-              {{ post.v_file }} ({{ post.timestamp }}) &#x2192;
-              <a href="{{url_for('download_file',variable = post.v_file)}}"
+              {{ pending_file.v_file }} ({{ pending_file.timestamp }}) &#x2192;
+              <a href="{{url_for('download_file',variable = pending_file.v_file)}}"
                 >Download</a> <br>
-                {{ post.description }} <br>
+                {{ pending_file.description }} <br>
+              <form action="{{ url_for('approve') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
+                <button type="submit" class="btn btn-success">Approve</button>
+              </form>
+              <form action="{{ url_for('delete') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
+                <button type="submit" class="btn btn-danger">Disapprove</button>
+              </form>
             </p>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
+  </div>
 </div>
 
 {% endblock %}
