@@ -121,14 +121,14 @@ def viewOnly():
     return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, validity=getValidity())
 
 @app.route('/upload', methods=['GET', 'POST'])
-def viewOnly():
+def uploader():
     if not session.get('logged_in'):
         return redirect("/login")
     get_pending()
     return render_template('upload.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,pending_files=pending_files)
 
 @app.route('/consensus', methods=['GET', 'POST'])
-def viewOnly():
+def consensus():
     if not session.get('logged_in'):
         return redirect("/login")
     get_tx_req()
