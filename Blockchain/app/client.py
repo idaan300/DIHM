@@ -232,8 +232,10 @@ def submit():
     requests.post(address, json=post_object)
     end = timer()
     print(end - start)
-    current_url = request.base_url
-    return redirect(current_url)
+    if(session['type'] == "upload"):
+        return redirect("/upload")
+    else:
+        return redirect("/")
 
 @app.route("/submit/<string:variable>",methods = ["GET"])
 def download_file(variable):
