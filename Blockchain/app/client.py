@@ -4,7 +4,7 @@ import os
 import requests
 import socket
 from user import User
-from flask import Flask, render_template, redirect, request,send_from_directory,session,send_file
+from flask import Flask, render_template, redirect, request,send_from_directory,session
 from werkzeug.utils import secure_filename
 from app import app
 import base64
@@ -137,15 +137,17 @@ def consensus():
 
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():
+    current_url = request.base_url
     link = "{0}/mine".format(ADDR)
     resp = requests.get(link)
-    return redirect("/")
+    return redirect(current_url)
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
+    current_url = request.base_url
     link = "{0}/delete".format(ADDR)
     resp = requests.get(link)
-    return redirect("/")
+    return redirect(current_url)
 
 @app.route('/account', methods=['GET','POST'])
 def create_account():
@@ -169,7 +171,7 @@ def change_password():
         name = session.get('name')
         password = request.form['new_password']
         admin.changePass(name,password)
-        return redirect("/")
+        return redirect("/login")
     return render_template('change_password.html')
 
 @app.route('/delete_account', methods=['GET', 'POST'])
@@ -224,7 +226,8 @@ def submit():
     requests.post(address, json=post_object)
     end = timer()
     print(end - start)
-    return redirect("/")
+    current_url = request.base_url
+    return redirect(current_url)
 
 @app.route("/submit/<string:variable>",methods = ["GET"])
 def download_file(variable):
