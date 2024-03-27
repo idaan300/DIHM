@@ -46,7 +46,7 @@ uint32_t appTxDutyCycle = 15000;
 bool overTheAirActivation = true;
 
 /*ADR enable*/
-bool loraWanAdr = true;
+bool loraWanAdr = false;
 
 /* Indicates if the node is sending confirmed or unconfirmed messages */
 bool isTxConfirmed = true;
@@ -73,7 +73,7 @@ uint8_t appPort = 2;
 * Note, that if NbTrials is set to 1 or 2, the MAC will not decrease
 * the datarate, in case the LoRaMAC layer did not receive an acknowledgment
 */
-uint8_t confirmedNbTrials = 1;
+uint8_t confirmedNbTrials = 4;
 
 /* Prepares the payload of the frame */
 static void prepareTxFrame( uint8_t port )
@@ -105,7 +105,6 @@ void setup() {
 
 void loop()
 {
-  delay(2000);
   st7735.st7735_fill_screen(ST7735_BLACK);
   switch( deviceState )
   {
@@ -114,6 +113,7 @@ void loop()
 #if(LORAWAN_DEVEUI_AUTO)
       LoRaWAN.generateDeveuiByChipID();
 #endif
+      st7735.st7735_write_str(0, 0, "---INIT---", Font_7x10, ST7735_RED, ST7735_BLACK);
       LoRaWAN.init(loraWanClass,loraWanRegion);
       break;
     }
@@ -121,8 +121,7 @@ void loop()
     {
       st7735.st7735_write_str(0, 0, "Joining TTN", Font_7x10, ST7735_RED, ST7735_BLACK);
       LoRaWAN.join();
-      delay(2000);
-      deviceState = DEVICE_STATE_SEND;
+      //3deviceState = DEVICE_STATE_SEND;
       break;
     }
     case DEVICE_STATE_SEND:
@@ -130,7 +129,6 @@ void loop()
       prepareTxFrame( appPort );
       LoRaWAN.send();
       st7735.st7735_write_str(0, 0, "Sending Frame To TTN", Font_7x10, ST7735_RED, ST7735_BLACK);
-      delay(2000);
       deviceState = DEVICE_STATE_CYCLE;
       break;
     }
@@ -140,7 +138,6 @@ void loop()
       txDutyCycleTime = appTxDutyCycle + randr( -APP_TX_DUTYCYCLE_RND, APP_TX_DUTYCYCLE_RND );
       LoRaWAN.cycle(txDutyCycleTime);
       st7735.st7735_write_str(0, 0, "Scheduling transmission and entering sleep", Font_7x10, ST7735_RED, ST7735_BLACK);
-      delay(2000);
       deviceState = DEVICE_STATE_SLEEP;
       break;
     }
@@ -148,7 +145,7 @@ void loop()
     {
       LoRaWAN.sleep(loraWanClass);
       st7735.st7735_write_str(0, 0, "Sleeping...", Font_7x10, ST7735_RED, ST7735_BLACK);
-      deviceState = DEVICE_STATE_SEND;
+      //deviceState = DEVICE_STATE_SEND;
       break;
     }
     default:
