@@ -4,7 +4,7 @@ import os
 import requests
 import socket
 from user import User
-from flask import Flask, render_template, redirect, request,send_from_directory,session
+from flask import Flask, render_template, redirect, request,send_from_directory,send_file,session
 from werkzeug.utils import secure_filename
 from app import app
 import base64
@@ -239,11 +239,11 @@ def submit():
 
 @app.route("/submit/<string:variable>",methods = ["GET"])
 def download_file(variable):
-    # p = files[variable]
-    # return send_file(p,as_attachment=True)
-    print("var = ", variable)
-    print("folder =", UPLOAD_FOLDER + variable)
-    #return send_file("/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/README.md")
-    return send_from_directory(app.config['UPLOAD_FOLDER'], variable, as_attachment=True)
+    p = files[variable]
+    return send_file(p,as_attachment=True)
+    # print("var = ", variable)
+    # print("folder =", UPLOAD_FOLDER + variable)
+    # #return send_file("/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/README.md")
+    # return send_from_directory(app.config['UPLOAD_FOLDER'], variable, as_attachment=True)
 
-app.run(host="0.0.0.0", port=8000,ssl_context=('app/cert.pem', 'app/key.pem'))
+app.run(host="0.0.0.0", port=8000)#,ssl_context=('app/cert.pem', 'app/key.pem'))
