@@ -79,12 +79,11 @@ class Blockchain:
         info = ""
         for block in chain:
             if block["prev_hash"] != "0":
+                transactions = block.get('transactions', [])
                 #b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
-                info += ("| File: ", block.get('transactions', []), " , Time: ", block.get('timestamp',''), " | ")
+                info += "| User: {}, Descr: {}, File: {}, Time: {} ".format(transactions['user'], transactions['description'], transactions['v_file'], block.get('timestamp',''))
         return info
 
-                
-    
     def check_chain_validity(self, chain):
         result = True
         er_block = ""

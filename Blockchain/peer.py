@@ -43,7 +43,10 @@ def get_chain():
 
 @app.route("/webrequest", methods=["GET"])
 def info():
-    inf = blockchain.getInfo()
+    chain = []
+    for block in blockchain.chain:
+        chain.append(block.to_dict())
+    inf = blockchain.getInfo(chain)
     return inf
 
 @app.route("/valid", methods=["GET"])
