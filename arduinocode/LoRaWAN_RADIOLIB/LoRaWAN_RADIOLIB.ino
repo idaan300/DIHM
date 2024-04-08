@@ -35,12 +35,11 @@ void setup() {
   st7735.st7735_fill_screen(ST7735_BLACK);
   Serial.println(F("Initalise the radio"));
   st7735.st7735_write_str(0, 0, "--init radio---", Font_7x10, ST7735_RED, ST7735_BLACK);
-  Serial.println("Hallo Joris");
   int state = radio.begin();
   debug(state != RADIOLIB_ERR_NONE, F("Initalise radio failed"), state, true);
   Serial.println(F("Join ('login') to the LoRaWAN Network"));
   state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
-  if(state != RADIOLIB_ERR_NONE) {st7735.st7735_write_str(0, 0, "--failed---", Font_7x10, ST7735_RED, ST7735_BLACK);}
+  if(state < RADIOLIB_ERR_NONE) {st7735.st7735_write_str(0, 0, "--failed---", Font_7x10, ST7735_RED, ST7735_BLACK);}
   debug(state < RADIOLIB_ERR_NONE, F("Join failed"), state, true);
 
   Serial.println(F("Ready!\n"));
@@ -60,14 +59,9 @@ void loop() {
   uplinkPayload[0] = Digital1;
   uplinkPayload[1] = highByte(Analog1);   // See notes for high/lowByte functions
   uplinkPayload[2] = lowByte(Analog1);
-  delay(1000);
-  st7735.st7735_write_str(0, 0, "---Sending Uplink---", Font_7x10, ST7735_RED, ST7735_BLACK);
   // Perform an uplink
   int state = node.sendReceive(uplinkPayload, sizeof(uplinkPayload));    
   debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
-
-  st7735.st7735_write_str(0, 0, "---Uplink Complete---", Font_7x10, ST7735_RED, ST7735_BLACK);
-  
   Serial.print(F("Uplink complete, next in "));
   Serial.print(uplinkIntervalSeconds);
   Serial.println(F(" seconds"));
