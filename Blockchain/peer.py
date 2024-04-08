@@ -41,6 +41,11 @@ def get_chain():
     #print("Chain Len: {0}".format(len(chain)))
     return json.dumps({"length" : len(chain), "chain" : chain})
 
+@app.route("/webrequest", methods=["GET"])
+def info():
+    inf = blockchain.getInfo()
+    return inf
+
 @app.route("/valid", methods=["GET"])
 def getValid():
     global validity

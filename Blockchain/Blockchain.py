@@ -74,6 +74,16 @@ class Blockchain:
             self.save_pending(self.chain)
         else:
             return False
+        
+    def getInfo(self, chain):
+        info = ""
+        for block in chain:
+            if block["prev_hash"] != "0":
+                #b = Block(transactions=block.get('transactions', []),timestamp=block.get('timestamp',''), prev_hash=block.get('prev_hash', ''), nonce=block.get('nonce',0))
+                info += ("| File: ", block.get('transactions', []), " , Time: ", block.get('timestamp',''), " | ")
+        return info
+
+                
     
     def check_chain_validity(self, chain):
         result = True
