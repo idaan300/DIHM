@@ -57,16 +57,19 @@ def info():
     print(inf)
     payload_data = {
         "downlinks": [{
-            "frm_payload": inf,
+            "frm_payload": "vu8=",
             "f_port": 15,
             "priority": "NORMAL"
         }]
     }       
     response = requests.post(url, json=payload_data, headers=headers)
+    print(headers)
     if response.status_code == 200:
         print("Downlink message scheduled successfully!")
+        return "Success"
     else:
         print("Failed to schedule downlink message. Status code:", response.status_code)
+        return "Failed"
 
 @app.route("/valid", methods=["GET"])
 def getValid():
