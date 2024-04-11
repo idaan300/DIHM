@@ -3,6 +3,7 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+#include "base64.hpp"
 #include "config.h"
 #include "HT_st7735.h"
 #include "Arduino.h"
@@ -63,9 +64,9 @@ void setup() {
 
 void loop() {
   if (deviceConnected) {
-        sendData();
 //        int state = node.sendReceive(uplinkPayload, sizeof(uplinkPayload)); //uplink and downlink same function    
 //        debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
+        sendData(); // sendData(lora_downlink);
         delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
     // disconnecting
@@ -84,10 +85,26 @@ void loop() {
     }
 }
 
+void stringToUnsignedCharArray(const String &input, unsigned char output[], size_t maxLength) {
+  size_t length = input.length();
+  if (length > maxLength) {
+    length = maxLength;
+  }
+  for (size_t i = 0; i < length; ++i) {
+    output[i] = (unsigned char)input.charAt(i);
+  }
+}
+
 void sendData(){
-    String fullString = "| User: Joris, Descr: Version 1.0 of uploaded file, File: ihm_part1.pdf, Time: 09/04/2024 11:03:23 ";
+    //fullstring = given bij LoRa downlink and should be decode from base64
+    String fullString = "fCBVc2VyOiBKb3JpcywgRGVzY3I6IFVwbG9hZCAxLCBGaWxlOiBBZnN0dWRlZXJPcGRyYWNodF9TY3JpcHRpZS5wZGYsIFRpbWU6IDIwMjQtMDQtMDIgMTQ6MTY6MTQgfCBVc2VyOiBKb3JpcywgRGVzY3I6IElobSB2ZXJzaWUgMiwNCg0KLi4uIA0KDQouLi4sIEZpbGU6IFJFQURNRS5tZCwgVGltZTogMjAyNC0wNC0wMyAxMjoxNToxMyA=";
     int len = fullString.length();
-    const int chunkSize = 20;
+    unsigned char charred[1000];
+    stringToUnsignedCharArray(fullString,charred,1000); 
+    unsigned char decoded_text[1000];
+    int decoded_length = decode_base64(charred,decoded_text);
+    fullString = (char *)decoded_text;
+    int chunkSize = 20;
     if(dataSent == false){
       for (int i = 0; i < len; i += chunkSize) {
     // Get the substring of the full string for this chunk
