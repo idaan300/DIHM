@@ -4,6 +4,7 @@ from Blockchain import Blockchain
 from Block import Block
 from flask import Flask, request
 import requests
+import base64
 
 blockchain = Blockchain()
 #peers list
@@ -54,10 +55,11 @@ def info():
     for block in blockchain.chain:
         chain.append(block.to_dict())
     inf = blockchain.getInfo(chain)
-    print(inf)
+    data_bytes = inf.encode('utf-8')
+    encoded_data = base64.b64encode(data_bytes).decode('utf-8')
     payload_data = {
         "downlinks": [{
-            "frm_payload": "vu8=",
+            "frm_payload": encoded_data,
             "f_port": 15,
             "priority": "NORMAL"
         }]
