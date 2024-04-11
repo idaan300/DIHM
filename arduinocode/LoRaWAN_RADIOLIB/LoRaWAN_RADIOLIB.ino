@@ -41,13 +41,12 @@ void setup() {
   state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
   if(state < RADIOLIB_ERR_NONE) {st7735.st7735_write_str(0, 0, "--failed---", Font_7x10, ST7735_RED, ST7735_BLACK);}
   debug(state < RADIOLIB_ERR_NONE, F("Join failed"), state, true);
-
+  st7735.st7735_write_str(0, 0, "--Joined TTN, ready to send--", Font_7x10, ST7735_RED, ST7735_BLACK);
   Serial.println(F("Ready!\n"));
 }
 
 
 void loop() {
-  st7735.st7735_fill_screen(ST7735_BLACK);
   Serial.println(F("Sending uplink"));
 
   // Read some inputs
@@ -60,7 +59,9 @@ void loop() {
   uplinkPayload[1] = highByte(Analog1);   // See notes for high/lowByte functions
   uplinkPayload[2] = lowByte(Analog1);
   // Perform an uplink
-  int state = node.sendReceive(uplinkPayload, sizeof(uplinkPayload));    
+  //sendReceive(String& strUp, uint8_t port, String& strDown, bool isConfirmed = false)
+  //sendReceiveuint8_t* dataUp, size_t lenUp, uint8_t port, uint8_t* dataDown, size_t* lenDown, bool isConfirmed = false)
+  int state = node.sendReceive(uplinkPayload, sizeof(uplinkPayload)); //uplink and downlink same function    
   debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
   Serial.print(F("Uplink complete, next in "));
   Serial.print(uplinkIntervalSeconds);

@@ -3,11 +3,18 @@ import json
 from Blockchain import Blockchain
 from Block import Block
 from flask import Flask, request
+import requests
 
 blockchain = Blockchain()
 #peers list
 validity = True
 peers = []
+headers = {
+    "Authorization": "Bearer NNSXS.Z5XAZZ7T7PTICIRYEVJBJEODFKLEGCV75BUOMWY.KZG7VOHDCL4HXKA3F3V2XJQDMOWKV2HUM4UMQNZYZSD3SUDFSQJA",
+    "Content-Type": "application/json",
+    "User-Agent": "DIHM-LoRa/1.0"
+}
+url = "https://eu1.cloud.thethings.network/api/v3/as/applications/dihm-module/webhooks/blockchain-server/devices/eui-70b3d57ed0066206/down/push"
 
 app = Flask(__name__)
 
@@ -47,7 +54,19 @@ def info():
     for block in blockchain.chain:
         chain.append(block.to_dict())
     inf = blockchain.getInfo(chain)
-    return inf
+    print(inf)
+    payload_data = {
+        "downlinks": [{
+            "frm_payload": inf,
+            "f_port": 15,
+            "priority": "NORMAL"
+        }]
+    }       
+    response = requests.post(url, json=payload_data, headers=headers)
+    if response.status_code == 200:
+        print("Downlink message scheduled successfully!")
+    else:
+        print("Failed to schedule downlink message. Status code:", response.status_code)
 
 @app.route("/valid", methods=["GET"])
 def getValid():
