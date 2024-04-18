@@ -204,10 +204,23 @@ def delete_account():
         return redirect("/")
     return render_template('delete_account.html', accounts=accounts)
 
+def save_fileIndex(files):
+    with open('upfiles.txt', 'w') as file:
+        json.dump(files, file, indent=4)
 
+def load_fileIndex():
+        try:
+            with open('upfiles.txt', 'r') as file:
+                listOfFiles = json.load(file)
+                return listOfFiles
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("No existing fileIndex found or error in parsing.")
+            return "null" 
+        
 @app.route("/submit", methods=["POST"])
 # When new transaction is created it is processed and added to transaction
 def submit():
+    global files
     start = timer()
     user = session['name']#request.form["user"]
     description = request.form["description"]
@@ -245,11 +258,11 @@ def submit():
 
 @app.route("/submit/<string:variable>",methods = ["GET"])
 def download_file(variable):
-    p = files[variable]
-    return send_file(p,as_attachment=True)
+    # p = files[variable]
+    # return send_file(p,as_attachment=True)
     # print("var = ", variable)
     # print("folder =", UPLOAD_FOLDER + variable)
     # #return send_file("/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/README.md")
-    # return send_from_directory(app.config['UPLOAD_FOLDER'], variable, as_attachment=True)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], variable, as_attachment=True)
 
 app.run(host="0.0.0.0", port=8000)#,ssl_context=('app/cert.pem', 'app/key.pem'))
