@@ -133,13 +133,13 @@
       <h2 class="text-center alert alert-primary">Upload a File</h2>
       <form action="/submit" method="POST" enctype="multipart/form-data">
         <div class="form-group">
-          <label>User Name:</label>
-          <input
-            type="text"
+          <label>Description:</label>
+          <textarea
             class="form-control"
-            name="user"
-            placeholder="Enter Your Full Name"
-          />
+            name="description"
+            placeholder="Enter Description"
+            rows="4"
+          ></textarea>
         </div>
 
         <div class="form-group">
@@ -178,10 +178,6 @@
               <a href="{{url_for('download_file',variable = pending_file.v_file)}}"
                 >Download</a> <br>
                 {{ pending_file.description }} <br>
-              <form action="{{ url_for('approve') }}" method="POST" style="display: inline;">
-                <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
-                <button type="submit" class="btn btn-success">Approve</button>
-              </form>
               <form action="{{ url_for('delete') }}" method="POST" style="display: inline;">
                 <input type="hidden" name="file_id" value="{{ pending_file.v_file }}">
                 <button type="submit" class="btn btn-danger">Disapprove</button>
