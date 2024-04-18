@@ -81,11 +81,16 @@ def getValidity():
 def index():
     if not session.get('logged_in'):
         return redirect("/login")  # Redirect to login if not logged in
-    session['type'] = "admin"
-    get_pending()
-    get_tx_req()
-    return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
-
+    if session['type'] == "admin":
+        get_pending()
+        get_tx_req()
+        return render_template("index.html",title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
+    elif session['type'] == "view":
+        return redirect("/view")
+    elif session['type'] == "upload":
+        return redirect("/upload")
+    elif session['type'] == "consensus":
+        return redirect("/consensus")
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -103,13 +108,14 @@ def login():
                 session['logged_in'] = True
                 session['name'] = entry["username"]
                 if(entry["user_type"] == "admin"):
-                    return redirect("/")  # Redirect to another page, e.g., home
+                    session['type'] = "admin"
                 if(entry["user_type"] == "view"):
-                    return redirect("/view")
+                    session['type'] = "view"
                 if(entry["user_type"] == "upload"):
-                    return redirect("/upload")
+                    session['type'] = "upload"
                 if(entry["user_type"] == "consensus"):
-                    return redirect("/consensus")
+                    session['type'] = "consensus"
+                return redirect("/")
         return "Login Failed"
     # GET request - show the login form
     return render_template('login.html')
