@@ -97,11 +97,8 @@ def login():
         # Handle the login logic here
         username = request.form['username']
         password = request.form['password']
-        
         db = admin.load()
-        #print(db)
-        # Verify username and password here
-        # For example, check against user data in the database
+
         for entry in db:
             #print("Entry --- > ", entry)
             if username == entry["username"] and password == entry["password"]:
@@ -124,6 +121,8 @@ def login():
 def viewOnly():
     if not session.get('logged_in'):
         return redirect("/login")
+    if not session['type'] == "view":
+        return redirect("/")
     get_tx_req()
     return render_template('view.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, validity=getValidity())
 
@@ -131,6 +130,8 @@ def viewOnly():
 def uploader():
     if not session.get('logged_in'):
         return redirect("/login")
+    if not session['type'] == "upload":
+        return redirect("/")
     get_pending()
     return render_template('upload.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,pending_files=pending_files)
 
@@ -138,7 +139,8 @@ def uploader():
 def consensus():
     if not session.get('logged_in'):
         return redirect("/login")
-    session['type'] = "consensus"
+    if not session['type'] == "consensus":
+        return redirect("/")
     get_tx_req()
     get_pending()
     return render_template('consensus.html',title="FileStorage",subtitle = "A Decentralized Network for File Storage/Sharing",node_address = ADDR,request_tx = request_tx, pending_files=pending_files, validity=getValidity())
