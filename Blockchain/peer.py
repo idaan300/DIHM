@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/bin/python3.9
 import json
 from Blockchain import Blockchain
 from Block import Block
