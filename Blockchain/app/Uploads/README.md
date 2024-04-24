@@ -2,6 +2,7 @@
 Digital Inventory of Hazardous Materials
 ssh ubuntu-1013457@145.24.223.204
 sudo lsof -ti:8000
+python peer.py
 
 links for troubleshooting:
 http://community.heltec.cn/t/integrate-wireless-tracker-with-the-things-network/14026/4 https://github.com/jgromes/RadioLib/tree/master->https://github.com/radiolib-org/radiolib-persistence/tree/main

@@ -1,5 +1,7 @@
-#!/bin/python3.9
+#!/usr/bin/env python3
 import json
+import sys
+print(sys.path)
 from Blockchain import Blockchain
 from Block import Block
 from flask import Flask, request

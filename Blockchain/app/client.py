@@ -22,7 +22,7 @@ admin = User()
 #destination for upload files
 app = Flask(__name__)
 app.secret_key = '7avQ3nV'  # Set a secret key for security purposes
-UPLOAD_FOLDER = "/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/"
+UPLOAD_FOLDER = "/home/JorisTDP/DIHM/Blockchain/app/Uploads/"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 #peers list
@@ -267,4 +267,4 @@ def download_file(variable):
     # #return send_file("/home/ubuntu-1013457/DIHM/Blockchain/app/Uploads/README.md")
     return send_from_directory(app.config['UPLOAD_FOLDER'], variable, as_attachment=True)
 
-app.run(host="0.0.0.0", port=8000)#,ssl_context=('app/cert.pem', 'app/key.pem'))
+app.run(host="0.0.0.0", port=9000)#,ssl_context=('app/cert.pem', 'app/key.pem'))
