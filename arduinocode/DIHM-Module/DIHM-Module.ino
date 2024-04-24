@@ -17,6 +17,7 @@ bool oldDeviceConnected = false;
 uint32_t value = 0;
 const char *uplinkMessage = "Sending...";
 uint8_t downlinkData[64];
+uint8_t storedData[64];
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -70,10 +71,12 @@ void loop() {
         uint8_t byteArray[] = {
     'h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', ' ',
     't', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', '\0'
-};      sendLora(); //Example byte array
-        size_t arrayLength = sizeof(downlinkData) / sizeof(downlinkData[0]); 
+};      
+        st7735.st7735_write_str(0, 0, "--BLE connect---", Font_7x10, ST7735_RED, ST7735_BLACK);
+        sendLora(); //Example byte array
+        size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
         unsigned char unsignedCharArray[arrayLength];
-        byteArrayToUnsignedCharArray(downlinkData, unsignedCharArray, arrayLength);
+        byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
         
         sendData(unsignedCharArray); // sendData(lora_downlink);
         delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
@@ -96,8 +99,25 @@ void loop() {
 
 void sendLora(){
     size_t downlinkSize = 0;
+    int timeOut = 500; //3 sec?
     int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function    
+
+//    uint8_t downlinkData[64] = {
+//    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
+//    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
+//}; 
     debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
+    memcpy(storedData, downlinkData, downlinkSize); // Copy received downlink data to storedData
+    unsigned long startTime = millis();  // Record the start time
+    while (millis() - startTime < timeOut) {
+        int state = node.downlink(downlinkData, &downlinkSize);
+        if (downlinkSize + sizeof(storedData) < sizeof(storedData)) { // Check if there is enough space
+            memcpy(storedData + downlinkSize, downlinkData, downlinkSize); // Append downlinkData to storedData
+        } else {
+            //debug(true, F("storedData is full"), false);
+            break; // Exit the loop, storedData is full
+        }
+      }
 }
 
 void stringToUnsignedCharArray(const String &input, unsigned char output[], size_t maxLength) {
