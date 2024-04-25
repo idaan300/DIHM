@@ -74,10 +74,12 @@ void loop() {
 };      
         st7735.st7735_write_str(0, 0, "--BLE connect---", Font_7x10, ST7735_RED, ST7735_BLACK);
         sendLora(); //Example byte array
+        st7735.st7735_write_str(0, 0, "--LOra Sent---", Font_7x10, ST7735_RED, ST7735_BLACK);
         size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
         unsigned char unsignedCharArray[arrayLength];
         byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
-        
+        const char* convertedData = reinterpret_cast<const char*>(unsignedCharArray);
+        st7735.st7735_write_str(0, 0, convertedData, Font_7x10, ST7735_RED, ST7735_BLACK);
         sendData(unsignedCharArray); // sendData(lora_downlink);
         delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
@@ -108,16 +110,16 @@ void sendLora(){
 //}; 
     debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
     memcpy(storedData, downlinkData, downlinkSize); // Copy received downlink data to storedData
-    unsigned long startTime = millis();  // Record the start time
-    while (millis() - startTime < timeOut) {
-        int state = node.downlink(downlinkData, &downlinkSize);
-        if (downlinkSize + sizeof(storedData) < sizeof(storedData)) { // Check if there is enough space
-            memcpy(storedData + downlinkSize, downlinkData, downlinkSize); // Append downlinkData to storedData
-        } else {
-            //debug(true, F("storedData is full"), false);
-            break; // Exit the loop, storedData is full
-        }
-      }
+//    unsigned long startTime = millis();  // Record the start time
+//    while (millis() - startTime < timeOut) {
+//        int state = node.downlink(downlinkData, &downlinkSize);
+//        if (downlinkSize + sizeof(storedData) < sizeof(storedData)) { // Check if there is enough space
+//            memcpy(storedData + downlinkSize, downlinkData, downlinkSize); // Append downlinkData to storedData
+//        } else {
+//            //debug(true, F("storedData is full"), false);
+//            break; // Exit the loop, storedData is full
+//        }
+//      }
 }
 
 void stringToUnsignedCharArray(const String &input, unsigned char output[], size_t maxLength) {
