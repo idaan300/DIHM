@@ -156,10 +156,7 @@ def approve():
 def delete():
     link = "{0}/delete".format(ADDR)
     resp = requests.get(link)
-    if(session['type'] == "consensus"):
-        return redirect("/consensus")
-    else:
-        return redirect("/")
+    return redirect("/")
 
 @app.route('/account', methods=['GET','POST'])
 def create_account():

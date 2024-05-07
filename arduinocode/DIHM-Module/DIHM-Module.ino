@@ -2,7 +2,8 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-
+#include <EEPROM.h>
+#define EEPROM_SIZE 128
 #include "base64.hpp"
 #include "config.h"
 #include "HT_st7735.h"
@@ -33,7 +34,14 @@ class MyServerCallbacks: public BLEServerCallbacks {
 };
 
 void setup() {
-  Serial.begin(115200);
+  USBSerial.begin(115200);
+  
+    uint8_t downlinkData[64] = {
+    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
+    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
+}; 
+  EEPROM.begin(EEPROM_SIZE);
+  saveData(downlinkData, 15);
   st7735.st7735_init();
   st7735.st7735_fill_screen(ST7735_BLACK);
   BLEDevice::init("ESP32-DIHM-MODULE");
@@ -62,10 +70,30 @@ void setup() {
   pAdvertising->setScanResponse(false);
   pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
-  Serial.println("Waiting a client connection to notify...");
+  USBSerial.println("Waiting a client connection to notify...");
   // Build payload byte array
 }
 
+void saveData(const uint8_t* data, size_t dataSize) {
+    // Write size of data to EEPROM
+    EEPROM.write(0, dataSize);
+
+    // Write data to EEPROM starting from address 1
+    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+        EEPROM.write(i + 1, data[i]);
+    }
+    EEPROM.commit(); // Commit changes to EEPROM
+}
+
+void loadData(uint8_t* data, size_t& dataSize) {
+    // Read size of data from EEPROM
+    dataSize = EEPROM.read(0);
+
+    // Read data from EEPROM starting from address 1
+    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+        data[i] = EEPROM.read(i + 1);
+    }
+}
 void loop() {
   if (deviceConnected) {
         uint8_t byteArray[] = {
@@ -87,7 +115,7 @@ void loop() {
     if (!deviceConnected && oldDeviceConnected) {
         delay(500); // give the bluetooth stack the chance to get things ready
         pServer->startAdvertising(); // restart advertising
-        Serial.println("start advertising");
+        USBSerial.println("start advertising");
         dataSent = false;
         oldDeviceConnected = deviceConnected;
     }
@@ -100,14 +128,15 @@ void loop() {
 }
 
 void sendLora(){
-    size_t downlinkSize = 0;
+    size_t downlinkSize = 16;
     int timeOut = 500; //3 sec?
     int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function    
-
-//    uint8_t downlinkData[64] = {
-//    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
-//    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
-//}; 
+    USBSerial.println(state);
+    if(state == -1101){
+        loadData(downlinkData, downlinkSize);
+    } else{
+        saveData(downlinkData, downlinkSize);
+      }
     debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
     memcpy(storedData, downlinkData, downlinkSize); // Copy received downlink data to storedData
 //    unsigned long startTime = millis();  // Record the start time
