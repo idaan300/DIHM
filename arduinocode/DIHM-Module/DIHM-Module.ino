@@ -2,7 +2,8 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-
+#include <EEPROM.h>
+#define EEPROM_SIZE 128
 #include "base64.hpp"
 #include "config.h"
 #include "HT_st7735.h"
@@ -36,6 +37,13 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 void setup() {
   USBSerial.begin(115200);
+  
+    uint8_t downlinkData[64] = {
+    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
+    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
+}; 
+  EEPROM.begin(EEPROM_SIZE);
+  saveData(downlinkData, 15);
   st7735.st7735_init();
   st7735.st7735_fill_screen(ST7735_BLACK);
   BLEDevice::init("ESP32-DIHM-MODULE");
@@ -68,6 +76,26 @@ void setup() {
   // Build payload byte array
 }
 
+void saveData(const uint8_t* data, size_t dataSize) {
+    // Write size of data to EEPROM
+    EEPROM.write(0, dataSize);
+
+    // Write data to EEPROM starting from address 1
+    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+        EEPROM.write(i + 1, data[i]);
+    }
+    EEPROM.commit(); // Commit changes to EEPROM
+}
+
+void loadData(uint8_t* data, size_t& dataSize) {
+    // Read size of data from EEPROM
+    dataSize = EEPROM.read(0);
+
+    // Read data from EEPROM starting from address 1
+    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+        data[i] = EEPROM.read(i + 1);
+    }
+}
 void loop() {
   if (deviceConnected) {
         //st7735.st7735_write_str(0, 0, "--BLE connect---", Font_7x10, ST7735_RED, ST7735_BLACK);
@@ -103,9 +131,15 @@ void loop() {
 }
 
 void sendLora(){
-    size_t downlinkSize = 10;
+    size_t downlinkSize = 16;
     int timeOut = 500; //3 sec?
-    int state = 1;//node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function    
+    int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function    
+    USBSerial.println(state);
+    if(state == -1101){
+        loadData(downlinkData, downlinkSize);
+    } else{
+        saveData(downlinkData, downlinkSize);
+      }
     debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
     memcpy(storedData, downlinkData, downlinkSize); // Copy received downlink data to storedData
 //    unsigned long startTime = millis();  // Record the start time

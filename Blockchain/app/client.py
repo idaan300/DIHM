@@ -147,21 +147,16 @@ def consensus():
 
 @app.route('/approve', methods=['GET', 'POST'])
 def approve():
-    link = "{0}/mine".format(ADDR)
-    resp = requests.get(link)
-    if(session['type'] == "consensus"):
-        return redirect("/consensus")
-    else:
-        return redirect("/")
+    if session['type'] == "consensus":
+        link = "{0}/mine".format(ADDR)
+        resp = requests.get(link)
+    return redirect("/")
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
     link = "{0}/delete".format(ADDR)
     resp = requests.get(link)
-    if(session['type'] == "consensus"):
-        return redirect("/consensus")
-    else:
-        return redirect("/")
+    return redirect("/")
 
 @app.route('/account', methods=['GET','POST'])
 def create_account():
