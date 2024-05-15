@@ -51,7 +51,7 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 
 void setup() {
-  Serial.begin(115200);
+  USBSerial.begin(115200);
 
   // Create the BLE Device
   BLEDevice::init("ESP32-DIHM-MODULE");
@@ -85,7 +85,7 @@ void setup() {
   pAdvertising->setScanResponse(false);
   pAdvertising->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
   BLEDevice::startAdvertising();
-  Serial.println("Waiting a client connection to notify...");
+  USBSerial.println("Waiting a client connection to notify...");
 }
 
 void sendData(){
@@ -121,7 +121,7 @@ void loop() {
     if (!deviceConnected && oldDeviceConnected) {
         delay(500); // give the bluetooth stack the chance to get things ready
         pServer->startAdvertising(); // restart advertising
-        Serial.println("start advertising");
+        USBSerial.println("start advertising");
         dataSent = false;
         oldDeviceConnected = deviceConnected;
     }
