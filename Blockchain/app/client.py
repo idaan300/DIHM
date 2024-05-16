@@ -229,7 +229,12 @@ def submit():
     files[up_file.filename] = os.path.join(app.root_path, "Uploads", up_file.filename)
     print(files[up_file.filename])
     #determines the size of the file uploaded in bytes 
-    file_states = os.stat(files[up_file.filename]).st_size 
+    try:
+        # Determines the size of the file uploaded in bytes
+        file_states = os.stat(files[up_file.filename]).st_size
+    except Exception as e:
+        print(f"Error determining file size or file name: {e}")
+        return "An error occurred while processing the file size or file name.", 500
     #create a transaction object
     up_file.stream.seek(0) #start reading at start of file
     file_data = up_file.stream.read()
