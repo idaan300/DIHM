@@ -17,9 +17,7 @@ bool dataSent = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
 const char *uplinkMessage = "Sending...";
-uint8_t downlinkData[] = {
-    0x7C, 0x20, 0x55, 0x73, 0x65, 0x72, 0x3A, 0x20, 0x4A, 0x6F,0x74
-}; 
+uint8_t downlinkData[64];
 uint8_t storedData[64];
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -37,11 +35,11 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 void setup() {
   USBSerial.begin(115200);
-  
-    uint8_t downlinkData[64] = {
-    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
-    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
-}; 
+//  
+//    uint8_t downlinkData[64] = {
+//    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
+//    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
+//}; 
   EEPROM.begin(EEPROM_SIZE);
   saveData(downlinkData, 15);
   st7735.st7735_init();
@@ -50,7 +48,9 @@ void setup() {
   st7735.st7735_write_str(0, 0, "--init radio---", Font_7x10, ST7735_RED, ST7735_BLACK);
   int state = radio.begin();
   debug(state != RADIOLIB_ERR_NONE, F("Initalise radio failed"), state, true);
+  node.setDutyCycle(true, 1250);
   state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
+  
   if(state < RADIOLIB_ERR_NONE) {st7735.st7735_write_str(0, 0, "--failed---", Font_7x10, ST7735_RED, ST7735_BLACK);state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);}
   
   pServer = BLEDevice::createServer();
@@ -111,7 +111,8 @@ void loop() {
         const char* convertedData = reinterpret_cast<const char*>(unsignedCharArray);
         USBSerial.println(convertedData);
         st7735.st7735_write_str(0, 0, convertedData, Font_7x10, ST7735_RED, ST7735_BLACK);
-        sendData(unsignedCharArray); // sendData(lora_downlink);
+        USBSerial.println(String(storedData[0]));
+        if(convertedData!= "" | storedData[0] != 0){ sendData(unsignedCharArray); }// sendData(lora_downlink);}
         delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
     // disconnecting
@@ -131,17 +132,30 @@ void loop() {
 }
 
 void sendLora(){
-    size_t downlinkSize = 16;
+    size_t downlinkSize = 64;
     int timeOut = 500; //3 sec?
-    int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function    
-    USBSerial.println(state);
-    if(state == -1101){
+    int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function  
+    if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
+    // Did we get a downlink with data for us
+    if(downlinkSize > 0) {
+      if(state == -1101){ //-1116
         loadData(downlinkData, downlinkSize);
-    } else{
-        saveData(downlinkData, downlinkSize);
+    } else if (state == -1116){
+        int state = node.downlink(downlinkData, &downlinkSize);
+        if(downlinkData[0] != 0){memcpy(storedData, downlinkData, downlinkSize);}
+        USBSerial.println(state); //1105
+    } else if (state == 0){
+        
+    } else {
+         debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
+         if(downlinkData[0] != 0){memcpy(storedData, downlinkData, downlinkSize);}
+         saveData(downlinkData, downlinkSize);
       }
-    debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
-    memcpy(storedData, downlinkData, downlinkSize); // Copy received downlink data to storedData
+    }
+      USBSerial.println("Downlink data");
+    }
+    //USBSerial.println(state);
+    // Copy received downlink data to storedData
 //    unsigned long startTime = millis();  // Record the start time
 //    while (millis() - startTime < timeOut) {
 //        int state = node.downlink(downlinkData, &downlinkSize);
