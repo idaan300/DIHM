@@ -68,7 +68,13 @@ void loop() {
   // Perform an uplink
   //sendReceive(String& strUp, uint8_t port, String& strDown, bool isConfirmed = false)
   //sendReceiveuint8_t* dataUp, size_t lenUp, uint8_t port, uint8_t* dataDown, size_t* lenDown, bool isConfirmed = false)
-  int state = node.sendReceive("hal", sizeof(uplinkPayload), downlinkData, &downlinkSize, true); //uplink and downlink same function  
+  int state = node.sendReceive("test",sizeof(uplinkPayload), downlinkData, &downlinkSize, true); //uplink and downlink same function  
+  for (int i = 0; i < sizeof(downlinkData); i++) {
+    USBSerial.print(downlinkData[i], HEX); // Print the byte as hexadecimal
+    USBSerial.print(" "); // Print a space between bytes
+}
+USBSerial.println();
+  int state2 = node.downlink(downlinkData, &downlinkSize);
   for (int i = 0; i < sizeof(downlinkData); i++) {
     USBSerial.print(downlinkData[i], HEX); // Print the byte as hexadecimal
     USBSerial.print(" "); // Print a space between bytes

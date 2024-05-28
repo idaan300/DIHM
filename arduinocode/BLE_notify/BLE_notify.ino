@@ -52,7 +52,7 @@ class MyServerCallbacks: public BLEServerCallbacks {
 
 void setup() {
   USBSerial.begin(115200);
-
+  USBSerial.print("WERK NOUUUUUUUU");
   // Create the BLE Device
   BLEDevice::init("ESP32-DIHM-MODULE");
 
