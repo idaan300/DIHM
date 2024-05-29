@@ -1,11 +1,10 @@
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
 #include <BLE2902.h>
 #include <EEPROM.h>
-#define EEPROM_SIZE 128
-#include "base64.hpp"
-#include "config.h"
 #include "HT_st7735.h"
 #include "Arduino.h"
 HT_st7735 st7735;
@@ -23,17 +22,33 @@ const char *uplinkMessage = "Send";
 uint8_t downlinkData[64];
 uint8_t storedData[64];
 
+#define EEPROM_SIZE 128
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define CHARACTERISTIC_UUID_2 "ad237abf-fd9f-400a-b8a0-fe9da237134a"
 
 class MyServerCallbacks: public BLEServerCallbacks {
-    void onConnect(BLEServer* pServer) {
-      deviceConnected = true;
-    };
+    void onConnect(BLEServer* pServer) override {
+        deviceConnected = true;
+    }
+    void onDisconnect(BLEServer* pServer) override {
+        deviceConnected = false;
+    }
+};
 
-    void onDisconnect(BLEServer* pServer) {
-      deviceConnected = false;
+class CharacteristicCallback: public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic *pChar) override {
+        std::string value = pChar->getValue();
+        String valueStr = String(value.c_str());
+        int split = valueStr.indexOf(';');
+        String ssid = valueStr.substring(0, split);
+        String pass = valueStr.substring(split + 1);
+
+        char ssidArray[32], passArray[32];
+        ssid.toCharArray(ssidArray, sizeof(ssidArray));
+        pass.toCharArray(passArray, sizeof(passArray));
+
+        WiFi.begin(ssidArray, passArray);
     }
 };
 
@@ -125,25 +140,20 @@ void setup() {
 }
 
 void saveData(const uint8_t* data, size_t dataSize) {
-    // Write size of data to EEPROM
     EEPROM.write(0, dataSize);
-
-    // Write data to EEPROM starting from address 1
     for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
         EEPROM.write(i + 1, data[i]);
     }
-    EEPROM.commit(); // Commit changes to EEPROM
+    EEPROM.commit();
 }
 
 void loadData(uint8_t* data, size_t& dataSize) {
-    // Read size of data from EEPROM
     dataSize = EEPROM.read(0);
-
-    // Read data from EEPROM starting from address 1
     for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
         data[i] = EEPROM.read(i + 1);
     }
 }
+
 void loop() {
   if (deviceConnected) {
         //st7735.st7735_write_str(0, 0, "--BLE connect---", Font_7x10, ST7735_RED, ST7735_BLACK);
@@ -164,17 +174,15 @@ void loop() {
 //        //if(convertedData!= "" | storedData[0] != 0){ sendData(unsignedCharArray); }// sendData(lora_downlink);}
 //        delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
-    // disconnecting
+
     if (!deviceConnected && oldDeviceConnected) {
-        delay(500); // give the bluetooth stack the chance to get things ready
-        pServer->startAdvertising(); // restart advertising
-        USBSerial.println("start advertising");
-        dataSent = false;
+        delay(500);
+        pServer->startAdvertising();
         oldDeviceConnected = deviceConnected;
+        dataSent = false;
     }
-    // connecting
+
     if (deviceConnected && !oldDeviceConnected) {
-        // do stuff here on connecting
         oldDeviceConnected = deviceConnected;
         dataSent = false;
     }
@@ -222,19 +230,14 @@ void sendLora(){
 //      }
 }
 
-void stringToUnsignedCharArray(const String &input, unsigned char output[], size_t maxLength) {
-  size_t length = input.length();
-  if (length > maxLength) {
-    length = maxLength;
-  }
-  for (size_t i = 0; i < length; ++i) {
-    output[i] = (unsigned char)input.charAt(i);
-  }
-}
-
-void byteArrayToUnsignedCharArray(uint8_t *data, unsigned char *result, size_t len) {
-    for (size_t i = 0; i < len; i++) {
-        result[i] = static_cast<unsigned char>(data[i]);
+        if (httpResponseCode > 0) {
+            String payload = http.getString();
+            USBSerial.println("HTTP Response code: " + String(httpResponseCode));
+        } else {
+            USBSerial.println("Error in HTTP request, code: " + String(httpResponseCode));
+        }
+        http.end();
+    } else {
     }
 }
 
