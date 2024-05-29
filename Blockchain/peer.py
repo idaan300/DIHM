@@ -54,6 +54,7 @@ def get_chain():
 
 @app.route("/webrequest", methods=['GET', 'POST'])
 def info():
+    global cur_index
     chain = []
     for block in blockchain.chain:
         chain.append(block.to_dict())
@@ -61,16 +62,16 @@ def info():
     data_bytes = inf.encode('utf-8')
     encoded_data = base64.b64encode(data_bytes).decode('utf-8')
     chunk_size = 241
-    #chunks = encoded_data[0:chunk_size]# for i in range(0, len(encoded_data), chunk_size)]
-    total_chunks = len(encoded_data) // chunk_size + (1 if len(encoded_data) % chunk_size > 0 else 0)
+    #chunk = [encoded_data[0:chunk_size]] # for i in range(0, len(encoded_data), chunk_size)]
+    total_chunks = len(encoded_data) // chunk_size #+ (1 if len(encoded_data) % chunk_size > 0 else 0)
     print("Total Chunks: ", total_chunks)
     start = cur_index * chunk_size
     end = start + chunk_size
-    chunk = encoded_data[start:end]
+    chunk = [encoded_data[start:end]]
+    print("cur index = ", cur_index)
     print("current chunk: ", chunk)
-    cur_index += 1
 
-    if(cur_index != total_chunks):
+    if(cur_index < total_chunks+1):
         #for chunk in chunks:
         payload_data = {
             "downlinks": [{
@@ -79,7 +80,9 @@ def info():
                 "priority": "NORMAL"
             }]
         }
-    elif(cur_index > total_chunks):
+        response = requests.post(url, json=payload_data, headers=headers)
+        cur_index += 1
+    else:
         payload_data = {
             "downlinks": [{
                 "frm_payload": 99,
@@ -88,8 +91,8 @@ def info():
             }]
         }
         cur_index = 1
-
-    response = requests.post(url, json=payload_data, headers=headers)
+    print("payload: ", payload_data)
+    #response = requests.post(url, json=payload_data, headers=headers)
         
     if response.status_code == 200:
         print("Downlink message scheduled successfully!")
