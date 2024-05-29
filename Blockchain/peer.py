@@ -11,6 +11,7 @@ import base64
 blockchain = Blockchain()
 #peers list
 validity = True
+cur_index = 1
 peers = []
 headers = {
     "Authorization": "Bearer NNSXS.Z5XAZZ7T7PTICIRYEVJBJEODFKLEGCV75BUOMWY.KZG7VOHDCL4HXKA3F3V2XJQDMOWKV2HUM4UMQNZYZSD3SUDFSQJA",
@@ -59,17 +60,35 @@ def info():
     inf = blockchain.getInfo(chain)
     data_bytes = inf.encode('utf-8')
     encoded_data = base64.b64encode(data_bytes).decode('utf-8')
-    chunk_size = 242
-    chunks = encoded_data[0:chunk_size]# for i in range(0, len(encoded_data), chunk_size)]
+    chunk_size = 241
+    #chunks = encoded_data[0:chunk_size]# for i in range(0, len(encoded_data), chunk_size)]
+    total_chunks = len(encoded_data) // chunk_size + (1 if len(encoded_data) % chunk_size > 0 else 0)
+    print("Total Chunks: ", total_chunks)
+    start = cur_index * chunk_size
+    end = start + chunk_size
+    chunk = encoded_data[start:end]
+    print("current chunk: ", chunk)
+    cur_index += 1
 
-    #for chunk in chunks:
-    payload_data = {
-        "downlinks": [{
-            "frm_payload": chunks,
-            "f_port": 15,
-            "priority": "NORMAL"
-        }]
-    }       
+    if(cur_index != total_chunks):
+        #for chunk in chunks:
+        payload_data = {
+            "downlinks": [{
+                "frm_payload": chunk,
+                "f_port": 15,
+                "priority": "NORMAL"
+            }]
+        }
+    elif(cur_index > total_chunks):
+        payload_data = {
+            "downlinks": [{
+                "frm_payload": 99,
+                "f_port": 15,
+                "priority": "NORMAL"
+            }]
+        }
+        cur_index = 1
+
     response = requests.post(url, json=payload_data, headers=headers)
         
     if response.status_code == 200:

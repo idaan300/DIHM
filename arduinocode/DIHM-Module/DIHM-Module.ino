@@ -1,11 +1,10 @@
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
 #include <BLE2902.h>
 #include <EEPROM.h>
 #include "HT_st7735.h"
+#include "config.h"
 #include "Arduino.h"
 HT_st7735 st7735;
 
@@ -33,22 +32,6 @@ class MyServerCallbacks: public BLEServerCallbacks {
     }
     void onDisconnect(BLEServer* pServer) override {
         deviceConnected = false;
-    }
-};
-
-class CharacteristicCallback: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pChar) override {
-        std::string value = pChar->getValue();
-        String valueStr = String(value.c_str());
-        int split = valueStr.indexOf(';');
-        String ssid = valueStr.substring(0, split);
-        String pass = valueStr.substring(split + 1);
-
-        char ssidArray[32], passArray[32];
-        ssid.toCharArray(ssidArray, sizeof(ssidArray));
-        pass.toCharArray(passArray, sizeof(passArray));
-
-        WiFi.begin(ssidArray, passArray);
     }
 };
 
@@ -153,13 +136,19 @@ void loadData(uint8_t* data, size_t& dataSize) {
         data[i] = EEPROM.read(i + 1);
     }
 }
+void byteArrayToUnsignedCharArray(uint8_t *data, unsigned char *result, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        result[i] = static_cast<unsigned char>(data[i]);
+    }
+}
+
 
 void loop() {
   if (deviceConnected) {
         //st7735.st7735_write_str(0, 0, "--BLE connect---", Font_7x10, ST7735_RED, ST7735_BLACK);
 //        if(dataSent == false){ sendLora();
-//        st7735.st7735_fill_screen(ST7735_BLACK);
-//        st7735.st7735_write_str(0, 0, "Retrieving the data via LoRa, this may take a while...", Font_11x18, ST7735_RED, ST7735_BLACK);
+        st7735.st7735_fill_screen(ST7735_BLACK);
+        st7735.st7735_write_str(0, 0, "Retrieving the data via LoRa, this may take a while...", Font_11x18, ST7735_RED, ST7735_BLACK);
 //        } //Request data
         size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
         unsigned char unsignedCharArray[arrayLength];
@@ -172,7 +161,7 @@ void loop() {
         //USBSerial.println(unsignedCharArray[0],HEX);
         if(unsignedCharArray[0] != 0 && dataSent == false){ sendData(unsignedCharArray);}
 //        //if(convertedData!= "" | storedData[0] != 0){ sendData(unsignedCharArray); }// sendData(lora_downlink);}
-//        delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
+        delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
 
     if (!deviceConnected && oldDeviceConnected) {
@@ -188,68 +177,21 @@ void loop() {
     }
 }
 
-void sendLora(){
-//    size_t downlinkSize = 64;
-//    int timeOut = 500; //3 sec?
-//    int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function  
-//    if(downlinkData[0] == 0){ USBSerial.print(downlinkData[1]); USBSerial.println("waiting for downlink"); }
-//    //while(downlinkData[0] == 0){int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); USBSerial.print(state);USBSerial.println(downlinkData[0],HEX);delay(500);}
-//    uint8_t values[] = {
-//    0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
-//    0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74
-//    };
-//  size_t numValues = sizeof(values) / sizeof(values[0]);
-//  if (numValues <= sizeof(downlinkData)) {
-//    for (size_t i = 0; i < numValues; i++) {
-//      downlinkData[i] = values[i];
-//    }
-//  } else {
-//    USBSerial.println("Error: too many values to write into downlinkData.");
-//  }
-//    downlinkSize = 20;
-//    if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
-//    // Did we get a downlink with data for us
-//    if(downlinkSize > 0) {
-//         USBSerial.println("status OK");
-//         debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
-//         memcpy(storedData, downlinkData, downlinkSize);
-//         saveData(downlinkData, downlinkSize);
-//    }
-//   }
-    //USBSerial.println(state);
-    // Copy received downlink data to storedData
-//    unsigned long startTime = millis();  // Record the start time
-//    while (millis() - startTime < timeOut) {
-//        int state = node.downlink(downlinkData, &downlinkSize);
-//        if (downlinkSize + sizeof(storedData) < sizeof(storedData)) { // Check if there is enough space
-//            memcpy(storedData + downlinkSize, downlinkData, downlinkSize); // Append downlinkData to storedData
-//        } else {
-//            //debug(true, F("storedData is full"), false);
-//            break; // Exit the loop, storedData is full
-//        }
-//      }
-}
-
-        if (httpResponseCode > 0) {
-            String payload = http.getString();
-            USBSerial.println("HTTP Response code: " + String(httpResponseCode));
-        } else {
-            USBSerial.println("Error in HTTP request, code: " + String(httpResponseCode));
-        }
-        http.end();
-    } else {
-    }
-}
+//void sendLora(){
+////    unsigned long startTime = millis();  // Record the start time
+////    while (millis() - startTime < timeOut) {
+////        int state = node.downlink(downlinkData, &downlinkSize);
+////        if (downlinkSize + sizeof(storedData) < sizeof(storedData)) { // Check if there is enough space
+////            memcpy(storedData + downlinkSize, downlinkData, downlinkSize); // Append downlinkData to storedData
+////        } else {
+////            //debug(true, F("storedData is full"), false);
+////            break; // Exit the loop, storedData is full
+////        }
+////      }
+//}
 
 void sendData(unsigned char inp[]){
     //fullstring = given bij LoRa downlink and should be decode from base64
-//    String fullString = "fCBVc2VyOiBKb3JpcywgRGVzY3I6IFVwbG9hZCAxLCBGaWxlOiBBZnN0dWRlZXJPcGRyYWNodF9TY3JpcHRpZS5wZGYsIFRpbWU6IDIwMjQtMDQtMDIgMTQ6MTY6MTQgfCBVc2VyOiBKb3JpcywgRGVzY3I6IElobSB2ZXJzaWUgMiwNCg0KLi4uIA0KDQouLi4sIEZpbGU6IFJFQURNRS5tZCwgVGltZTogMjAyNC0wNC0wMyAxMjoxNToxMyA=";
-//    int len = fullString.length();
-//    unsigned char charred[1000];
-//    stringToUnsignedCharArray(fullString,charred,1000); 
-//    unsigned char decoded_text[1000];
-//    int decoded_length = decode_base64(inp,decoded_text);
-//    String fullString = (char *)decoded_text
     String fullString = (char *)inp;
     USBSerial.println(fullString); 
     USBSerial.println(dataSent); 
