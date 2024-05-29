@@ -11,7 +11,7 @@ import base64
 blockchain = Blockchain()
 #peers list
 validity = True
-cur_index = 1
+cur_index = 0
 peers = []
 headers = {
     "Authorization": "Bearer NNSXS.Z5XAZZ7T7PTICIRYEVJBJEODFKLEGCV75BUOMWY.KZG7VOHDCL4HXKA3F3V2XJQDMOWKV2HUM4UMQNZYZSD3SUDFSQJA",
@@ -71,8 +71,13 @@ def info():
     print("cur index = ", cur_index)
     print("current chunk: ", chunk)
 
-    if(cur_index < total_chunks+1):
-        #for chunk in chunks:
+    if cur_index < total_chunks:
+        start = cur_index * chunk_size
+        end = start + chunk_size
+        chunk = encoded_data[start:end]
+
+        print("current chunk:", chunk)
+
         payload_data = {
             "downlinks": [{
                 "frm_payload": chunk,
@@ -85,15 +90,15 @@ def info():
     else:
         payload_data = {
             "downlinks": [{
-                "frm_payload": 99,
+                "frm_payload": "99",  # Use string "99" for frm_payload
                 "f_port": 15,
                 "priority": "NORMAL"
             }]
         }
-        cur_index = 1
-    print("payload: ", payload_data)
-    #response = requests.post(url, json=payload_data, headers=headers)
-        
+        cur_index = 0  # Reset index after all chunks are sent
+
+    print("payload:", payload_data)
+    
     if response.status_code == 200:
         print("Downlink message scheduled successfully!")
         return "Success"
