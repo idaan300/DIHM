@@ -44,6 +44,15 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
         int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function  
         if(downlinkData[0] == 0){ USBSerial.print(downlinkData[1]); USBSerial.println("waiting for downlink"); }
         //while(downlinkData[0] == 0){int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); USBSerial.print(state);USBSerial.println(downlinkData[0],HEX);delay(500);}
+        int attempts = 0;
+        const int maxAttempts = 10; 
+        while(downlinkData[0] == 0 && attempts < maxAttempts) {
+            int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
+            USBSerial.print(state);
+            USBSerial.println(downlinkData[0], HEX);
+            delay(500);
+            attempts++;
+        }
         uint8_t values[] = {
         0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
         0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
@@ -81,6 +90,13 @@ void setup() {
   debug(state != RADIOLIB_ERR_NONE, F("Initalise radio failed"), state, true);
   USBSerial.println("Join ('login') to the LoRaWAN Network");
   state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
+  int attempts = 0;
+  const int maxAttempts = 10; 
+        while(state != 0 && attempts < maxAttempts) {
+            state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
+            USBSerial.println(state); delay(500);
+            attempts++;
+        }
   //while(state != 0){state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true); USBSerial.println(state); delay(500);};
   USBSerial.print("[LoRaWAN] DevAddr: ");
   USBSerial.println((unsigned long)node.getDevAddr(), HEX);
