@@ -36,32 +36,63 @@ class MyServerCallbacks: public BLEServerCallbacks {
 };
 
 class CharacteristicCallback: public BLECharacteristicCallbacks {
+    void byteArrayToUnsignedCharArray(uint8_t *data, unsigned char *result, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        result[i] = static_cast<unsigned char>(data[i]);
+    }
+  }
+
+  void sendData(unsigned char inp[]){
+    //fullstring = given bij LoRa downlink and should be decode from base64
+    String fullString = (char *)inp;
+    USBSerial.println(fullString); 
+    USBSerial.println(dataSent); 
+    int len = fullString.length();
+    int chunkSize = 20;
+    USBSerial.println("sending data over ble"); 
+      for (int i = 0; i < len; i += chunkSize) {
+    // Get the substring of the full string for this chunk
+      String chunk = fullString.substring(i, min(i + chunkSize, len));
+      // Set the value of the characteristic to the chunk
+      pCharacteristic->setValue(chunk.c_str());
+      USBSerial.println(chunk.c_str());
+      // Notify the characteristic
+      pCharacteristic->notify();
+      // Delay to avoid congestion in the Bluetooth stack
+      delay(500); // You may adjust this delay as needed
+     }
+}
+  
     void onWrite(BLECharacteristic *pChar) override {
         USBSerial.println("R received");
         st7735.st7735_fill_screen(ST7735_BLACK);
         st7735.st7735_write_str(0, 0, "Retrieving the data via LoRa, this may take a while...", Font_11x18, ST7735_RED, ST7735_BLACK);
         size_t downlinkSize = 64;
-        int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function  
-        if(downlinkData[0] == 0){ USBSerial.print(downlinkData[1]); USBSerial.println("waiting for downlink"); }
+        //int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); //uplink and downlink same function  
+        //if(downlinkData[0] == 0){ USBSerial.print(downlinkData[1]); USBSerial.println("waiting for downlink"); }
         //while(downlinkData[0] == 0){int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); USBSerial.print(state);USBSerial.println(downlinkData[0],HEX);delay(500);}
         int attempts = 0;
         const int maxAttempts = 10; 
         while(downlinkData[0] == 0 && attempts < maxAttempts) {
             int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
             USBSerial.print(state);
-            USBSerial.println(downlinkData[0], HEX);
+            USBSerial.print(downlinkData[0], HEX);USBSerial.print(downlinkData[1], HEX);USBSerial.print(downlinkData[2], HEX);
             delay(500);
             attempts++;
         }
-        if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
+        //if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
         // Did we get a downlink with data for us
         if(downlinkSize > 0) {
              USBSerial.println("status OK");
-             debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
+             //debug((state != RADIOLIB_LORAWAN_NO_DOWNLINK) && (state != RADIOLIB_ERR_NONE), F("Error in sendReceive"), state, false);
              memcpy(storedData, downlinkData, downlinkSize);
+             size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
+             unsigned char unsignedCharArray[arrayLength];
+             byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
+             sendData(unsignedCharArray);
              //saveData(downlinkData, downlinkSize);
         }
-       }
+       //}
     }
 };
 
@@ -95,10 +126,8 @@ void setup() {
   BLEService *pService = pServer->createService(SERVICE_UUID);
   pCharacteristic = pService->createCharacteristic(
                       CHARACTERISTIC_UUID,
-                      BLECharacteristic::PROPERTY_READ   |
                       BLECharacteristic::PROPERTY_WRITE  |
-                      BLECharacteristic::PROPERTY_NOTIFY |
-                      BLECharacteristic::PROPERTY_INDICATE
+                      BLECharacteristic::PROPERTY_NOTIFY
                     );
   pCharacteristic_2 = pService->createCharacteristic(
         CHARACTERISTIC_UUID_2,
@@ -155,13 +184,13 @@ void loop() {
         size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
         unsigned char unsignedCharArray[arrayLength];
         byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
-////        for (int i = 0; i < sizeof(storedData); i++) {
-////          if(storedData[i] != 0){USBSerial.print(storedData[i], HEX); // Print the byte in hexadecimal format
-////          USBSerial.print(" "); }// Print a space between bytes}
-////      }
+//        for (int i = 0; i < sizeof(storedData); i++) {
+//          if(storedData[i] != 0){USBSerial.print(storedData[i], HEX); // Print the byte in hexadecimal format
+//          USBSerial.print(" "); }// Print a space between bytes}
+//      }
         String fullString = (char *)unsignedCharArray;
-        //USBSerial.println(unsignedCharArray[0],HEX);
-        if(unsignedCharArray[0] != 0 && dataSent == false){ sendData(unsignedCharArray);}
+        USBSerial.println(unsignedCharArray[0],HEX);USBSerial.println(unsignedCharArray[1],HEX);USBSerial.println(unsignedCharArray[2],HEX);
+        //if(unsignedCharArray[0] != 0 && dataSent == false){ sendData(unsignedCharArray);}
 //        //if(convertedData!= "" | storedData[0] != 0){ sendData(unsignedCharArray); }// sendData(lora_downlink);}
         delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
@@ -191,28 +220,3 @@ void loop() {
 ////        }
 ////      }
 //}
-
-void sendData(unsigned char inp[]){
-    //fullstring = given bij LoRa downlink and should be decode from base64
-    String fullString = (char *)inp;
-    USBSerial.println(fullString); 
-    USBSerial.println(dataSent); 
-    int len = fullString.length();
-    int chunkSize = 20;
-    if(dataSent == false && len > 1){
-      USBSerial.println("sending data over ble"); 
-      for (int i = 0; i < len; i += chunkSize) {
-    // Get the substring of the full string for this chunk
-      String chunk = fullString.substring(i, min(i + chunkSize, len));
-      // Set the value of the characteristic to the chunk
-      USBSerial.println(chunk.c_str());
-      pCharacteristic->setValue(chunk.c_str());
-      // Notify the characteristic
-      pCharacteristic->notify();
-      // Delay to avoid congestion in the Bluetooth stack
-      delay(50); // You may adjust this delay as needed
-     }
-     dataSent = true;
-  }
-    
-}
