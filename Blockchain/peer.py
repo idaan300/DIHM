@@ -95,6 +95,7 @@ def info():
                 "priority": "NORMAL"
             }]
         }
+        response = requests.post(url, json=payload_data, headers=headers)
         cur_index = 0  # Reset index after all chunks are sent
 
     print("payload:", payload_data)

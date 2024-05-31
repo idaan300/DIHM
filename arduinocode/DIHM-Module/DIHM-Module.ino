@@ -53,20 +53,6 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
             delay(500);
             attempts++;
         }
-        uint8_t values[] = {
-        0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
-        0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x62, 0x6C, 0x6F, 0x63, 0x6B, 0x63, 0x68, 0x61,
-        0x69, 0x6E, 0x20, 0x74, 0x65, 0x73, 0x74,0x00,0x00
-        };
-        size_t numValues = sizeof(values) / sizeof(values[0]);
-        if (numValues <= sizeof(downlinkData)) {
-          for (size_t i = 0; i < numValues; i++) {
-            downlinkData[i] = values[i];
-          }
-        } else {
-          USBSerial.println("Error: too many values to write into downlinkData.");
-        }
-        downlinkSize = 40;
         if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
         // Did we get a downlink with data for us
         if(downlinkSize > 0) {
