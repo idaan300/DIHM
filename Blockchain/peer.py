@@ -54,25 +54,47 @@ def get_chain():
 
 @app.route("/webrequest", methods=['GET', 'POST'])
 def info():
+    global cur_index
     chain = []
     for block in blockchain.chain:
         chain.append(block.to_dict())
     inf = blockchain.getInfo(chain)
     data_bytes = inf.encode('utf-8')
     encoded_data = base64.b64encode(data_bytes).decode('utf-8')
-    chunk_size = 242
-    chunks = [encoded_data[0:chunk_size]]# for i in range(0, len(encoded_data), chunk_size)]
+    chunk_size = 241
+    #chunk = [encoded_data[0:chunk_size]] # for i in range(0, len(encoded_data), chunk_size)]
+    total_chunks = len(encoded_data) // chunk_size #+ (1 if len(encoded_data) % chunk_size > 0 else 0)
+    print("Total Chunks: ", total_chunks)
+    print("cur index = ", cur_index)
 
-    #for chunk in chunks:
-    payload_data = {
-        "downlinks": [{
-            "frm_payload": chunks,
-            "f_port": 15,
-            "priority": "NORMAL"
-        }]
-    }       
-    response = requests.post(url, json=payload_data, headers=headers)
-        
+    if cur_index < total_chunks:
+        start = cur_index * chunk_size
+        end = start + chunk_size
+        chunk = encoded_data[start:end]
+        print("current chunk:", chunk)
+
+        payload_data = {
+            "downlinks": [{
+                "frm_payload": chunk,
+                "f_port": 15,
+                "priority": "NORMAL"
+            }]
+        }
+        response = requests.post(url, json=payload_data, headers=headers)
+        cur_index += 1
+    else:
+        payload_data = {
+            "downlinks": [{
+                "frm_payload": "99",  # Use string "99" for frm_payload
+                "f_port": 15,
+                "priority": "NORMAL"
+            }]
+        }
+        response = requests.post(url, json=payload_data, headers=headers)
+        cur_index = 0  # Reset index after all chunks are sent
+
+    print("response:", response)
+    
     if response.status_code == 200:
         print("Downlink message scheduled successfully!")
         return "Success"
