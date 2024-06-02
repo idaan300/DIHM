@@ -16,7 +16,6 @@ BLE2902 *pBLE2902;
 bool deviceConnected = false;
 bool dataSent = false;
 bool oldDeviceConnected = false;
-uint32_t value = 0;
 const char *uplinkMessage = "Send";
 uint8_t downlinkData[64];
 uint8_t storedData[64];
@@ -42,22 +41,35 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
     }
   }
 
+  void saveData(const uint8_t* data, size_t dataSize) {
+    EEPROM.write(0, dataSize);
+    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+        EEPROM.write(i + 1, data[i]);
+    }
+    EEPROM.commit();
+}
+
+void loadData(uint8_t* data, size_t& dataSize) {
+    dataSize = EEPROM.read(0);
+    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+        data[i] = EEPROM.read(i + 1);
+    }
+}
+
   void sendData(unsigned char inp[]){
-    //fullstring = given bij LoRa downlink and should be decode from base64
     String fullString = (char *)inp;
     USBSerial.println(fullString); 
     USBSerial.println(dataSent); 
     int len = fullString.length();
-    int chunkSize = 20;
+    int chunkSize = 10;
+    String s = "test";
     USBSerial.println("sending data over ble"); 
+    pCharacteristic->setValue(s.c_str());
+    pCharacteristic->notify();
       for (int i = 0; i < len; i += chunkSize) {
-    // Get the substring of the full string for this chunk
       String chunk = fullString.substring(i, min(i + chunkSize, len));
-      // Set the value of the characteristic to the chunk
-      pCharacteristic->setValue(chunk.c_str());
-      USBSerial.println(chunk.c_str());
-      // Notify the characteristic
-      pCharacteristic->notify();
+//      pCharacteristic->setValue(chunk.c_str());
+//      pCharacteristic->notify();
       // Delay to avoid congestion in the Bluetooth stack
       delay(500); // You may adjust this delay as needed
      }
@@ -72,13 +84,30 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
         //if(downlinkData[0] == 0){ USBSerial.print(downlinkData[1]); USBSerial.println("waiting for downlink"); }
         //while(downlinkData[0] == 0){int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); USBSerial.print(state);USBSerial.println(downlinkData[0],HEX);delay(500);}
         int attempts = 0;
-        const int maxAttempts = 10; 
+        const int maxAttempts = 3; 
         while(downlinkData[0] == 0 && attempts < maxAttempts) {
             int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
             USBSerial.print(state);
             USBSerial.print(downlinkData[0], HEX);USBSerial.print(downlinkData[1], HEX);USBSerial.print(downlinkData[2], HEX);
             delay(500);
             attempts++;
+        }
+        if(attempts >= maxAttempts){
+           loadData(downlinkData,downlinkSize);
+           memcpy(storedData, downlinkData, downlinkSize);
+           size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
+           unsigned char unsignedCharArray[arrayLength];
+           byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
+           const int halfLength = 50;
+           unsigned char firstHalf[halfLength];
+           unsigned char secondHalf[halfLength];
+           for (int i = 0; i < halfLength; i++) {
+              firstHalf[i] = unsignedCharArray[i];
+              secondHalf[i] = unsignedCharArray[i + halfLength];
+            }
+           USBSerial.print("NO LORA CONNECTION POSSIBLE");
+           sendData(firstHalf);
+           delay(1000);
         }
         //if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
         // Did we get a downlink with data for us
@@ -108,7 +137,7 @@ void setup() {
   USBSerial.println("Join ('login') to the LoRaWAN Network");
   state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
   int attempts = 0;
-  const int maxAttempts = 10; 
+  const int maxAttempts = 3; 
         while(state != 0 && attempts < maxAttempts) {
             state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
             USBSerial.println(state); delay(500);
@@ -151,6 +180,18 @@ void setup() {
   st7735.st7735_fill_screen(ST7735_BLACK);
   st7735.st7735_write_str(0, 10, "Please connect with bluetooth", Font_11x18, ST7735_RED, ST7735_BLACK);
   // Build payload byte array
+
+//  uint8_t data[200];
+//  const char* lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+//  for (int i = 0; i < 200; i++) {
+//    if (i < strlen(lorem)) {
+//      data[i] = (uint8_t)lorem[i];
+//    } else {
+//      data[i] = 0; // Vul de rest met null-terminators
+//    }
+//  }
+//  size_t lengh = 200;
+//  saveData(data, lengh);
 }
 
 void saveData(const uint8_t* data, size_t dataSize) {
@@ -161,12 +202,6 @@ void saveData(const uint8_t* data, size_t dataSize) {
     EEPROM.commit();
 }
 
-void loadData(uint8_t* data, size_t& dataSize) {
-    dataSize = EEPROM.read(0);
-    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
-        data[i] = EEPROM.read(i + 1);
-    }
-}
 void byteArrayToUnsignedCharArray(uint8_t *data, unsigned char *result, size_t len) {
     for (size_t i = 0; i < len; i++) {
         result[i] = static_cast<unsigned char>(data[i]);
@@ -176,22 +211,17 @@ void byteArrayToUnsignedCharArray(uint8_t *data, unsigned char *result, size_t l
 
 void loop() {
   if (deviceConnected) {
-        //st7735.st7735_write_str(0, 0, "--BLE connect---", Font_7x10, ST7735_RED, ST7735_BLACK);
-//        if(dataSent == false){ sendLora();
         st7735.st7735_fill_screen(ST7735_BLACK);
         st7735.st7735_write_str(0, 0, "Retrieving the data via LoRa, this may take a while...", Font_11x18, ST7735_RED, ST7735_BLACK);
-//        } //Request data
-        size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
-        unsigned char unsignedCharArray[arrayLength];
-        byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
+//        size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
+//        unsigned char unsignedCharArray[arrayLength];
+//        byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
 //        for (int i = 0; i < sizeof(storedData); i++) {
 //          if(storedData[i] != 0){USBSerial.print(storedData[i], HEX); // Print the byte in hexadecimal format
 //          USBSerial.print(" "); }// Print a space between bytes}
 //      }
-        String fullString = (char *)unsignedCharArray;
-        USBSerial.println(unsignedCharArray[0],HEX);USBSerial.println(unsignedCharArray[1],HEX);USBSerial.println(unsignedCharArray[2],HEX);
-        //if(unsignedCharArray[0] != 0 && dataSent == false){ sendData(unsignedCharArray);}
-//        //if(convertedData!= "" | storedData[0] != 0){ sendData(unsignedCharArray); }// sendData(lora_downlink);}
+        //String fullString = (char *)unsignedCharArray;
+        //USBSerial.println(unsignedCharArray[0],HEX);USBSerial.println(unsignedCharArray[1],HEX);USBSerial.println(unsignedCharArray[2],HEX);
         delay(1000); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
     }
 
@@ -207,16 +237,3 @@ void loop() {
         dataSent = false;
     }
 }
-
-//void sendLora(){
-////    unsigned long startTime = millis();  // Record the start time
-////    while (millis() - startTime < timeOut) {
-////        int state = node.downlink(downlinkData, &downlinkSize);
-////        if (downlinkSize + sizeof(storedData) < sizeof(storedData)) { // Check if there is enough space
-////            memcpy(storedData + downlinkSize, downlinkData, downlinkSize); // Append downlinkData to storedData
-////        } else {
-////            //debug(true, F("storedData is full"), false);
-////            break; // Exit the loop, storedData is full
-////        }
-////      }
-//}
