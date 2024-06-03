@@ -2,15 +2,18 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 #include "HT_st7735.h"
 #include "config.h"
 #include "Arduino.h"
 HT_st7735 st7735;
+#include "FS.h"
+#include <LittleFS.h>
+#define FORMAT_LITTLEFS_IF_FAILED true
 
 BLEServer* pServer = NULL;
-BLECharacteristic* pCharacteristic = NULL;
-BLECharacteristic* pCharacteristic_2 = NULL;
+BLECharacteristic* pCharText = NULL;
+BLECharacteristic* pCharRequest = NULL;
 BLEDescriptor *pDescr;
 BLE2902 *pBLE2902;
 bool deviceConnected = false;
@@ -19,6 +22,7 @@ bool oldDeviceConnected = false;
 const char *uplinkMessage = "Send";
 uint8_t downlinkData[64];
 uint8_t storedData[64];
+int mydata;
 
 #define EEPROM_SIZE 128
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -41,35 +45,17 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
     }
   }
 
-  void saveData(const uint8_t* data, size_t dataSize) {
-    EEPROM.write(0, dataSize);
-    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
-        EEPROM.write(i + 1, data[i]);
-    }
-    EEPROM.commit();
-}
-
-void loadData(uint8_t* data, size_t& dataSize) {
-    dataSize = EEPROM.read(0);
-    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
-        data[i] = EEPROM.read(i + 1);
-    }
-}
-
-  void sendData(unsigned char inp[]){
-    String fullString = (char *)inp;
+  void sendData(String inp){
+    String fullString = inp;
     USBSerial.println(fullString); 
     USBSerial.println(dataSent); 
     int len = fullString.length();
     int chunkSize = 10;
-    String s = "test";
     USBSerial.println("sending data over ble"); 
-    pCharacteristic->setValue(s.c_str());
-    pCharacteristic->notify();
       for (int i = 0; i < len; i += chunkSize) {
       String chunk = fullString.substring(i, min(i + chunkSize, len));
-//      pCharacteristic->setValue(chunk.c_str());
-//      pCharacteristic->notify();
+      pCharText->setValue(chunk.c_str());
+      pCharText->notify();
       // Delay to avoid congestion in the Bluetooth stack
       delay(500); // You may adjust this delay as needed
      }
@@ -84,7 +70,7 @@ void loadData(uint8_t* data, size_t& dataSize) {
         //if(downlinkData[0] == 0){ USBSerial.print(downlinkData[1]); USBSerial.println("waiting for downlink"); }
         //while(downlinkData[0] == 0){int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); USBSerial.print(state);USBSerial.println(downlinkData[0],HEX);delay(500);}
         int attempts = 0;
-        const int maxAttempts = 3; 
+        const int maxAttempts = 1; 
         while(downlinkData[0] == 0 && attempts < maxAttempts) {
             int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
             USBSerial.print(state);
@@ -93,20 +79,13 @@ void loadData(uint8_t* data, size_t& dataSize) {
             attempts++;
         }
         if(attempts >= maxAttempts){
-           loadData(downlinkData,downlinkSize);
-           memcpy(storedData, downlinkData, downlinkSize);
-           size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
-           unsigned char unsignedCharArray[arrayLength];
-           byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
-           const int halfLength = 50;
-           unsigned char firstHalf[halfLength];
-           unsigned char secondHalf[halfLength];
-           for (int i = 0; i < halfLength; i++) {
-              firstHalf[i] = unsignedCharArray[i];
-              secondHalf[i] = unsignedCharArray[i + halfLength];
-            }
+           String saved = readStringFromFile("/data.txt");
+//           memcpy(storedData, downlinkData, downlinkSize);
+//           size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
+//           unsigned char unsignedCharArray[arrayLength];
+//           byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
            USBSerial.print("NO LORA CONNECTION POSSIBLE");
-           sendData(firstHalf);
+           sendData(saved);
            delay(1000);
         }
         //if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
@@ -118,16 +97,41 @@ void loadData(uint8_t* data, size_t& dataSize) {
              size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
              unsigned char unsignedCharArray[arrayLength];
              byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
-             sendData(unsignedCharArray);
-             //saveData(downlinkData, downlinkSize);
+             String blockchain = String((char*)unsignedCharArray);
+             sendData(String((char*)unsignedCharArray));
+             writeFile(LittleFS, "/data.txt",(char*)unsignedCharArray);
         }
-       //}
+    } 
+String readStringFromFile(const char* path) {
+  File file = LittleFS.open(path, FILE_READ);
+  if (!file) {
+    USBSerial.println("Failed to open file for reading");
+    return "";
+  }
+  String data = file.readString();
+  file.close();
+  return data;
+}
+
+void writeFile(fs::FS &fs, const char * path, const char * message){
+    USBSerial.printf("Writing file: %s\r\n", path);
+
+    File file = fs.open(path, FILE_WRITE);
+    if(!file){
+        USBSerial.println("- failed to open file for writing");
+        return;
     }
+    if(file.print(message)){
+        USBSerial.println("- file written");
+    } else {
+        USBSerial.println("- write failed");
+    }
+    file.close();
+}
 };
 
 void setup() {
   USBSerial.begin(115200);
-  EEPROM.begin(EEPROM_SIZE);
   st7735.st7735_init();
   st7735.st7735_fill_screen(ST7735_BLACK);
   BLEDevice::init("ESP32-DIHM-MODULE");
@@ -153,20 +157,22 @@ void setup() {
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
   BLEService *pService = pServer->createService(SERVICE_UUID);
-  pCharacteristic = pService->createCharacteristic(
+  pCharText = pService->createCharacteristic(
                       CHARACTERISTIC_UUID,
-                      BLECharacteristic::PROPERTY_WRITE  |
                       BLECharacteristic::PROPERTY_NOTIFY
                     );
-  pCharacteristic_2 = pService->createCharacteristic(
+  pCharRequest = pService->createCharacteristic(
         CHARACTERISTIC_UUID_2,
         BLECharacteristic::PROPERTY_READ |
         BLECharacteristic::PROPERTY_WRITE 
     );
-  pCharacteristic_2->setCallbacks(new CharacteristicCallback());
+  pCharRequest->setCallbacks(new CharacteristicCallback());
     
-  pCharacteristic->addDescriptor(new BLE2902());
-  pCharacteristic_2->addDescriptor(new BLE2902());
+  pBLE2902 = new BLE2902();
+  pBLE2902->setNotifications(true);
+  pCharText->addDescriptor(pBLE2902);
+
+  pCharRequest->addDescriptor(new BLE2902());
   
   pService->start();
   dataSent = false;
@@ -179,7 +185,13 @@ void setup() {
   USBSerial.println("Waiting a client connection to notify...");
   st7735.st7735_fill_screen(ST7735_BLACK);
   st7735.st7735_write_str(0, 10, "Please connect with bluetooth", Font_11x18, ST7735_RED, ST7735_BLACK);
-  // Build payload byte array
+  if(!LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
+      USBSerial.println("LittleFS Mount Failed");
+      return;
+   }
+   else{
+       USBSerial.println("Little FS Mounted Successfully");
+   }
 
 //  uint8_t data[200];
 //  const char* lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
@@ -194,20 +206,13 @@ void setup() {
 //  saveData(data, lengh);
 }
 
-void saveData(const uint8_t* data, size_t dataSize) {
-    EEPROM.write(0, dataSize);
-    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
-        EEPROM.write(i + 1, data[i]);
-    }
-    EEPROM.commit();
-}
-
-void byteArrayToUnsignedCharArray(uint8_t *data, unsigned char *result, size_t len) {
-    for (size_t i = 0; i < len; i++) {
-        result[i] = static_cast<unsigned char>(data[i]);
-    }
-}
-
+//void saveData(const uint8_t* data, size_t dataSize) {
+//    EEPROM.write(0, dataSize);
+//    for (size_t i = 0; i < dataSize && i < EEPROM_SIZE; i++) {
+//        EEPROM.write(i + 1, data[i]);
+//    }
+//    EEPROM.commit();
+//}
 
 void loop() {
   if (deviceConnected) {
