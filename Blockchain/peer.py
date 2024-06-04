@@ -65,7 +65,8 @@ def info():
     payload = downlinks.get('frm_payload')
     print(payload)
     decoded_bytes = base64.b64decode(payload)
-    integer_value = ord(decoded_bytes.decode('utf-8'))
+    print(decoded_bytes)
+    integer_value = decoded_bytes.decode('utf-8')
     print(integer_value)
     chain = []
     for block in blockchain.chain:
