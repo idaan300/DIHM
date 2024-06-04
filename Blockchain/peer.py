@@ -80,8 +80,7 @@ def info():
                 "priority": "NORMAL"
             }]
         }
-        #jsondata = json.dumps(payload_data)
-        print(payload_data)
+
         response = requests.post(url, json=payload_data, headers=headers)
         cur_index += 1
     else:
