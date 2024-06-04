@@ -55,6 +55,15 @@ def get_chain():
 @app.route("/webrequest", methods=['GET', 'POST'])
 def info():
     global cur_index
+
+    data = request.get_json()
+        
+    if data is None:
+        return "Invalid or missing JSON payload", 400
+
+    # Process the payload
+    print("Received payload:", data)
+
     chain = []
     for block in blockchain.chain:
         chain.append(block.to_dict())
@@ -70,7 +79,7 @@ def info():
     if cur_index < total_chunks:
         start = cur_index * chunk_size
         end = start + chunk_size
-        chunk = encoded_data[start:end]
+        chunk = cur_index + encoded_data[start:end]
         print("current chunk:", chunk)
 
         payload_data = {
