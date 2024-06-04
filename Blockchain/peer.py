@@ -65,7 +65,9 @@ def info():
     payload = downlinks.get('frm_payload')
     print(payload)
     decoded_bytes = base64.b64decode(payload)
-    integer_value = ord(decoded_bytes.decode('utf-8'))
+    print(decoded_bytes)
+    integer_value = int(decoded_bytes.decode('utf-8'))
+    integer_value = integer_value - 60
     print(integer_value)
     chain = []
     for block in blockchain.chain:
@@ -73,26 +75,30 @@ def info():
     inf = blockchain.getInfo(chain)
     data_bytes = inf.encode('utf-8')
     encoded_data = base64.b64encode(data_bytes).decode('utf-8')
-    chunk_size = 241
+    chunk_size = 80
     #chunk = [encoded_data[0:chunk_size]] # for i in range(0, len(encoded_data), chunk_size)]
     total_chunks = len(encoded_data) // chunk_size #+ (1 if len(encoded_data) % chunk_size > 0 else 0)
+    textTotal = str(total_chunks)
+    byteTotal = textTotal.encode('utf-8')
+    encodedTotal = base64.b64encode(byteTotal).decode('utf-8')
     print("Total Chunks: ", total_chunks)
     print("cur index = ", cur_index)
-
-    if payload == 255:
+    print("tot chunk:",total_chunks)
+    if integer_value == 0:
         payload_data = {
             "downlinks": [{
-                "frm_payload": str(total_chunks),
+                "frm_payload": str(encodedTotal),
                 "f_port": 15,
                 "priority": "NORMAL"
             }]
         }
+        print(payload_data)
         response = requests.post(url, json=payload_data, headers=headers)
 
-    elif 0 < payload < total_chunks:
-        start = cur_index * chunk_size
+    elif 0 < integer_value < total_chunks:
+        start = integer_value * chunk_size
         end = start + chunk_size
-        chunk = str(cur_index) + encoded_data[start:end]
+        chunk = encoded_data[start:end]
         print("current chunk:", chunk)
 
         payload_data = {
@@ -104,11 +110,11 @@ def info():
         }
 
         response = requests.post(url, json=payload_data, headers=headers)
-        cur_index += 1
+        #cur_index += 1
     else:
         payload_data = {
             "downlinks": [{
-                "frm_payload": "99",  # Use string "99" for frm_payload
+                "frm_payload": str(encodedTotal),  # Use string "99" for frm_payload
                 "f_port": 15,
                 "priority": "NORMAL"
             }]
