@@ -19,10 +19,11 @@ BLE2902 *pBLE2902;
 bool deviceConnected = false;
 bool dataSent = false;
 bool oldDeviceConnected = false;
-const int *uplinkMessage = -1;
+const char *uplinkMessage = "59";
 uint8_t downlinkData[64];
 uint8_t storedData[64];
 int mydata;
+int totalMessages;
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -61,6 +62,7 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
   
     void onWrite(BLECharacteristic *pChar) override {
         USBSerial.println("R received");
+        String fullChain = "";
         st7735.st7735_fill_screen(ST7735_BLACK);
         st7735.st7735_write_str(0, 0, "Retrieving the data via LoRa, this may take a while...", Font_11x18, ST7735_RED, ST7735_BLACK);
         size_t downlinkSize = 0;
@@ -69,31 +71,61 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
         //while(downlinkData[0] == 0){int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true); USBSerial.print(state);USBSerial.println(downlinkData[0],HEX);delay(500);}
         int attempts = 0;
         const int maxAttempts = 5; 
-        while(downlinkData == 0 && attempts < maxAttempts) {
+        while(downlinkData[0] == 0 && downlinkData[0] != 31 && attempts < maxAttempts) {
         int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
+        USBSerial.print("curdata[0-1]:");
+        USBSerial.println(downlinkData[0]);USBSerial.println(downlinkData[1]);
+        size_t datalength = sizeof(downlinkData) / sizeof(downlinkSize); 
+        unsigned char totalUnsigned[datalength];
+        byteArrayToUnsignedCharArray(downlinkData, totalUnsigned, datalength);
+        //USBSerial.println((char*)totalUnsigned);
+        String totlen = String((char*)totalUnsigned);
+        USBSerial.println("totleng string vs totleng int:");
+        USBSerial.println(totlen);
+        totalMessages = totlen.toInt();
+        USBSerial.println(totalMessages);
         attempts++;}
-        if(downlinkData == 0){
-           String saved = "testinglol";//readStringFromFile("/data.txt");
+        const char *uplinkMessage = "60";
+        if(downlinkData[0] == 0){
+           String saved = "No LoRa Data found?";//readStringFromFile("/data.txt");
            USBSerial.print("NO LORA CONNECTION POSSIBLE");
            sendData(saved);
            delay(1000);
-        } else {
-            int totalMessages = downlinkData[0];
-            for(attempts = 0; attempt < totalMessages, attempts++) {
-              int *uplinkMessage = attempts;
+        } else{
+//              for (int i = 0; i < datalength; i++) {
+//                  USBSerial.print(downlinkData[i], HEX); // Print the byte in hexadecimal format
+//                  USBSerial.print(" "); // Print a space between bytes
+//              }
+            USBSerial.println(totalMessages);
+            for(attempts = 0; attempts < totalMessages;) {
               int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
-              USBSerial.print(state);
+              if(downlinkData[0] != 0 && downlinkData[0] != 3 && downlinkData[0] != 31){ USBSerial.print(state);
               USBSerial.println("status OK");
+              int num = atoi(uplinkMessage);
+              num++;
+              char updatedMessage[10]; // Buffer to hold the new string
+              itoa(num, updatedMessage, 10); // Convert integer to string
+              uplinkMessage = updatedMessage;
+              USBSerial.println(updatedMessage);
+              USBSerial.println(uplinkMessage);
               memcpy(storedData, downlinkData, downlinkSize);
+              for (int i = 0; i < sizeof(storedData); i++) {
+                  USBSerial.print(storedData[i], HEX); // Print the byte in hexadecimal format
+                  USBSerial.print(" "); // Print a space between bytes
+              }
+                USBSerial.println();
               size_t arrayLength = sizeof(storedData) / sizeof(storedData[0]); 
               unsigned char unsignedCharArray[arrayLength];
               byteArrayToUnsignedCharArray(storedData, unsignedCharArray, arrayLength);
               USBSerial.println((char*)unsignedCharArray);
               String blockchain = String((char*)unsignedCharArray);
-              sendData(String((char*)unsignedCharArray));  
-              delay(100);
+              fullChain += blockchain;
               attempts++;
+              //sendData(String((char*)unsignedCharArray));  
+              } 
+              delay(20);
             }
+            sendData(fullChain); 
           }
         //if(state != RADIOLIB_LORAWAN_NO_DOWNLINK) {
 //        // Did we get a downlink with data for us
