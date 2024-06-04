@@ -14,7 +14,7 @@ validity = True
 cur_index = 0
 peers = []
 headers = {
-    "Authorization": "Bearer NNSXS.NNSXS.UUH6QYJSEFKEMVSTOW2PM5PPZRTEPIIJN6FOROI.PHOJVIBUHIEYIWTZMXLDGVEV22HZPQDNIIERX72XVMGP4576EJAQ",#Z5XAZZ7T7PTICIRYEVJBJEODFKLEGCV75BUOMWY.KZG7VOHDCL4HXKA3F3V2XJQDMOWKV2HUM4UMQNZYZSD3SUDFSQJA",
+    "Authorization": "Bearer NNSXS.Z5XAZZ7T7PTICIRYEVJBJEODFKLEGCV75BUOMWY.KZG7VOHDCL4HXKA3F3V2XJQDMOWKV2HUM4UMQNZYZSD3SUDFSQJA",
     "Content-Type": "application/json",
     "User-Agent": "DIHM-LoRa/1.0"
 }
@@ -75,11 +75,13 @@ def info():
 
         payload_data = {
             "downlinks": [{
-                "frm_payload": chunk,
+                "frm_payload": str(chunk),
                 "f_port": 15,
                 "priority": "NORMAL"
             }]
         }
+        #jsondata = json.dumps(payload_data)
+        print(payload_data)
         response = requests.post(url, json=payload_data, headers=headers)
         cur_index += 1
     else:
@@ -90,6 +92,7 @@ def info():
                 "priority": "NORMAL"
             }]
         }
+        print(payload_data)
         response = requests.post(url, json=payload_data, headers=headers)
         cur_index = 0  # Reset index after all chunks are sent
 
