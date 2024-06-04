@@ -19,7 +19,7 @@ BLE2902 *pBLE2902;
 bool deviceConnected = false;
 bool dataSent = false;
 bool oldDeviceConnected = false;
-const char *uplinkMessage = "Send";
+const int *uplinkMessage = -1;
 uint8_t downlinkData[64];
 uint8_t storedData[64];
 int mydata;

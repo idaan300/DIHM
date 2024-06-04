@@ -7,6 +7,7 @@ from Block import Block
 from flask import Flask, request
 import requests
 import base64
+import string
 
 blockchain = Blockchain()
 #peers list
@@ -60,10 +61,9 @@ def info():
         
     if data is None:
         return "Invalid or missing JSON payload", 400
-
-    # Process the payload
-    print("Received payload:", data)
-
+    downlinks = data.get('uplink_message')
+    payload = downlinks.get('frm_payload')
+    print(payload)
     chain = []
     for block in blockchain.chain:
         chain.append(block.to_dict())
@@ -76,10 +76,20 @@ def info():
     print("Total Chunks: ", total_chunks)
     print("cur index = ", cur_index)
 
+    if payload == -1:
+        payload_data = {
+            "downlinks": [{
+                "frm_payload": str(total_chunks),
+                "f_port": 15,
+                "priority": "NORMAL"
+            }]
+        }
+        response = requests.post(url, json=payload_data, headers=headers)
+
     if cur_index < total_chunks:
         start = cur_index * chunk_size
         end = start + chunk_size
-        chunk = cur_index + encoded_data[start:end]
+        chunk = string(cur_index) + encoded_data[start:end]
         print("current chunk:", chunk)
 
         payload_data = {
