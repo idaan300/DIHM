@@ -64,6 +64,9 @@ def info():
     downlinks = data.get('uplink_message')
     payload = downlinks.get('frm_payload')
     print(payload)
+    decoded_bytes = base64.b64decode(payload)
+    integer_value = ord(decoded_bytes.decode('utf-8'))
+    print(integer_value)
     chain = []
     for block in blockchain.chain:
         chain.append(block.to_dict())
@@ -76,7 +79,7 @@ def info():
     print("Total Chunks: ", total_chunks)
     print("cur index = ", cur_index)
 
-    if payload == -1:
+    if payload == 255:
         payload_data = {
             "downlinks": [{
                 "frm_payload": str(total_chunks),
@@ -86,10 +89,10 @@ def info():
         }
         response = requests.post(url, json=payload_data, headers=headers)
 
-    if cur_index < total_chunks:
+    elif 0 < payload < total_chunks:
         start = cur_index * chunk_size
         end = start + chunk_size
-        chunk = string(cur_index) + encoded_data[start:end]
+        chunk = str(cur_index) + encoded_data[start:end]
         print("current chunk:", chunk)
 
         payload_data = {
