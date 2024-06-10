@@ -18,15 +18,10 @@ BLECharacteristic* pCharRequest = NULL;
 BLE2902 *pBLE2902;
 
 bool deviceConnected = false;
-bool dataSent = false;
 bool oldDeviceConnected = false;
 
 const char *firstuplinkMessage = "59";
-uint8_t downlinkData[64];
-uint8_t prevDownlink[64];
-uint8_t storedData[64];
-int mydata;
-int totalMessages;
+String savedChain;
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -67,24 +62,26 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
 
     // Handle incoming BLE writes
     void onWrite(BLECharacteristic *pChar) override {
+        uint8_t downlinkData[64];
+        uint8_t prevDownlink[64];
+        uint8_t storedData[64];
+        int totalMessages;
         USBSerial.println("Request received");
         String fullChain = "";
         st7735.st7735_fill_screen(ST7735_BLACK);
         st7735.st7735_write_str(0, 0, "Retrieving the data via LoRa, this may take a while...", Font_11x18, ST7735_RED, ST7735_BLACK);
 
         size_t downlinkSize = 0;
-        int attempts = 0;
-        const int maxAttempts = 5; 
-
+        int maxAttempts = 3;
         // Get the total amount of messages
-        while(attempts < maxAttempts) {
+        for(int attempts = 0; attempts < maxAttempts; attempts++) {
             int state = node.sendReceive(firstuplinkMessage, 1, downlinkData, &downlinkSize, true);
             
             // Convert data to int
-            size_t datalength = sizeof(downlinkData) / sizeof(downlinkSize); 
-            unsigned char totalUnsigned[datalength];
-            byteArrayToUnsignedCharArray(downlinkData, totalUnsigned, datalength);
-            String totlen = String((char*)totalUnsigned);
+//            size_t datalength = sizeof(downlinkData) / sizeof(downlinkData[0]); 
+//            unsigned char totalUnsigned[datalength];
+//            byteArrayToUnsignedCharArray(downlinkData, totalUnsigned, datalength);
+            String totlen = String((char*)downlinkData);
             USBSerial.println(totlen);
             totalMessages = totlen.toInt();
             memcpy(prevDownlink, downlinkData, downlinkSize); // Store amount as prevDownlink
@@ -92,23 +89,20 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
             if(totalMessages > -1 && totalMessages < 255) { 
                 break; // If correct data received, go to next step
             }
-            attempts++;
             USBSerial.println(totalMessages);
         }
-
-        const char *uplinkMessage = "60";
         if(downlinkData[0] == 0) { // If no downlink data, read from file
-            String saved = readStringFromFile("/data.txt");
+            //String saved = readStringFromFile("/data.txt");
             st7735.st7735_fill_screen(ST7735_BLACK);
             st7735.st7735_write_str(0, 0, "No LoRa connection", Font_11x18, ST7735_RED, ST7735_BLACK);
             USBSerial.println("NO LORA CONNECTION POSSIBLE");
-            sendData(saved);
+            sendData(savedChain);
             delay(1000);
         } else {
             USBSerial.println(totalMessages);
             st7735.st7735_fill_screen(ST7735_BLACK);
-
-            for(attempts = 0; attempts < totalMessages;) { // For every message store data in fullChain
+            const char *uplinkMessage = "60";
+            for(int attempts = 0; attempts < totalMessages; attempts++) { // For every message store data in fullChain
                 int state = node.sendReceive(uplinkMessage, 1, downlinkData, &downlinkSize, true);
 
                 // If data ok, increment num and get next message in line
@@ -134,16 +128,13 @@ class CharacteristicCallback: public BLECharacteristicCallbacks {
                     fullChain += blockchain;
 
                     memset(storedData, 0, sizeof(storedData)); // Reset stored array
-                    attempts++;
-                } else {
-                    int state = node.downlink(downlinkData, &downlinkSize); // Try to catch
                 }
                 delay(20);
             }
-            char charArray[fullChain.length() + 1]; // +1 for the null terminator
-            fullChain.toCharArray(charArray, fullChain.length() + 1);
-            writeFile(LittleFS, "/data.txt",charArray); //Store chain in file
-
+//            char charArray[fullChain.length() + 1]; // +1 for the null terminator
+//            fullChain.toCharArray(charArray, fullChain.length() + 1);
+//            writeFile(LittleFS, "/data.txt",charArray); //Store chain in file
+            savedChain = fullChain;
             st7735.st7735_fill_screen(ST7735_BLACK);
             st7735.st7735_write_str(0, 0, "Sending data to app over BLE, please be patient.", Font_11x18, ST7735_RED, ST7735_BLACK);
             sendData(fullChain); // When all messages are received, send it over BLE to app 
@@ -199,11 +190,13 @@ void setup() {
 
     int attempts = 0;
     const int maxAttempts = 3; 
-    while(state != 0 && attempts < maxAttempts) {
+    while(true) {
         state = node.beginOTAA(joinEUI, devEUI, nwkKey, appKey, true);
         USBSerial.println(state); 
-        delay(500);
+        if(state == 0) { break;}
+        if(attempts >= maxAttempts){USBSerial.println("NO LORA POSSIBLE");}
         attempts++;
+        delay(500);
     }
 
     USBSerial.print("[LoRaWAN] DevAddr: ");
@@ -235,7 +228,6 @@ void setup() {
     pCharRequest->addDescriptor(new BLE2902());
 
     pService->start();
-    dataSent = false;
 
     // Start advertising
     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -267,11 +259,9 @@ void loop() {
         delay(500);
         pServer->startAdvertising();
         oldDeviceConnected = deviceConnected;
-        dataSent = false;
     }
 
     if (deviceConnected && !oldDeviceConnected) {
         oldDeviceConnected = deviceConnected;
-        dataSent = false;
     }
 }

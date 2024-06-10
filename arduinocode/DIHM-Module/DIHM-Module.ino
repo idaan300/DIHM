@@ -15,9 +15,11 @@ BLECharacteristic* pCharText = NULL;
 BLECharacteristic* pCharRequest = NULL;
 BLEDescriptor *pDescr;
 BLE2902 *pBLE2902;
+
 bool deviceConnected = false;
 bool dataSent = false;
 bool oldDeviceConnected = false;
+
 const char *firstuplinkMessage = "59";
 uint8_t downlinkData[64];
 uint8_t prevDownlink[64];
@@ -219,7 +221,7 @@ void setup() {
    else{
        USBSerial.println("Little FS Mounted Successfully");
    }
-}
+
 
 void loop() {
   if (deviceConnected) {
